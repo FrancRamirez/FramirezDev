@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Francisco Ramirez | Desarrollador FullStack</title>
+  <meta name="description" content="Portfolio personal de Francisco Ramirez (Framirez) - Desarrollador FullStack Freelancer.">
+
+  <!-- Fuentes: Space Grotesk (títulos) + Inter (texto) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Canvas: fondo estrellado dinámico -->
+  <canvas id="starsCanvas"></canvas>
+
+  <!-- Header: navbar -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <a href="#inicio" class="navbar__logo">Framirez<span class="dot">.</span>dev</a>
+
+      <!-- Hamburguesa (mobile), lógica en script.js -->
+      <button class="navbar__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="navbar__menu" id="navMenu">
+        <a href="#inicio" class="nav-link">Inicio</a>
+        <a href="#sobre-mi" class="nav-link">Acerca de mí</a>
+        <a href="#proyectos" class="nav-link">Proyectos</a>
+        <a href="#stack" class="nav-link">Stack</a>
+        <a href="#estudios" class="nav-link">Estudios</a>
+        <a href="#contacto" class="nav-link nav-link--cta">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Sección 1: Hero / Bienvenida -->
+    <section id="inicio" class="section hero">
+      <div class="hero__card">
+        <h1 class="hero__title">¡Hola!</h1>
+        <p class="hero__text">Bienvenido y muchas gracias por visitar mi página web</p>
+        <a href="#contacto" class="btn btn--primary hero__cta">Hablemos</a>
+      </div>
+
+      <div class="hero__media">
+        <!-- Collage: capturas reutilizadas de Proyectos -->
+        <div class="hero__stack">
+          <img src="assets/images/NartoEv.jpg" alt="Captura del sitio NartoEV" class="hero__stack-img hero__stack-img--back">
+          <img src="assets/images/HerreriaEduardo.jpg" alt="Captura del sitio Herrería Eduardo" class="hero__stack-img hero__stack-img--front">
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 2: Acerca de mí -->
+    <section id="sobre-mi" class="section about">
+      <div class="card card--wide">
+        <h2 class="section__title">Acerca de mí</h2>
+        <p class="about__text">
+          Mi nombre es Francisco, soy desarrollador full stack y freelancer. Técnico Universitario Programador graduado de la Universidad Tecnológica Nacional.
+        </p>
+        <p class="about__text">
+          Me dedico a ofrecer soluciones y servicios, sean para desarrollar páginas
+          web, software o aplicaciones a los usuarios que más lo necesitan.
+        </p>
+      </div>
+    </section>
+
+    <!-- Sección 3: Proyectos (carrusel Páginas Web + Aplicaciones) -->
+    <section id="proyectos" class="section section--wide">
+
+      <div class="carousel--main" data-carousel="proyectos" data-autoplay="10000">
+
+        <!-- Flechas prev/next -->
+       <button type="button" class="carousel__arrow carousel__arrow--prev" aria-label="Slide anterior">&#10094;</button>
+
+        <!-- Ventana que recorta y difumina los slides -->
+        <div class="carousel carousel__viewport">
+          <div class="carousel__track" id="proyectosTrack">
+
+            <!-- Slide 1: Páginas Web -->
+            <div class="carousel__slide">
+              <div class="card card--wide">
+                <h2 class="section__title">Páginas Web</h2>
+                <div class="project-grid">
+
+                  <article class="project-card">
+                    <h3 class="project-card__name">Herrería Eduardo</h3>
+                    <a href="https://herreriaeduardo.com.ar" target="_blank" rel="noopener" class="project-card__image">
+                      <img src="assets/images/HerreriaEduardo.jpg" alt="Herrería Eduardo">
+                    </a>
+                    <p class="project-card__details">Sitio web de herreria local: Rejas, portones y estructuras a medida.</p>
+                  </article>
+
+                  <article class="project-card">
+                    <h3 class="project-card__name">NartoEV</h3>
+                    <a href="https://nartoev.com.ar" target="_blank" rel="noopener" class="project-card__image">
+                      <img src="assets/images/NartoEv.jpg" alt="NartoEV">
+                    </a>
+                    <p class="project-card__details">Sitio web de publicidad de cargadores para vehiculos electricos: Instaladores profesionales y especializados.</p>
+                  </article>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 2: Aplicaciones -->
+            <div class="carousel__slide">
+              <div class="card card--wide">
+                <h2 class="section__title">Aplicaciones</h2>
+                <div class="app-grid">
+                  <article class="app-card">
+                    <h3 class="app-card__name">Galeria</h3>
+                    <img class="app-card__icon" src="assets/images/Galeria.png" alt="Ícono de Galeria">
+                    <p class="app-card__details">Galeria de fotos.</p>
+                    <a href="downloads/Galeria.apk" class="app-card__download" data-download>
+                      <span>Descarga</span>
+                    </a>
+                  </article>
+                  <article class="app-card">
+                    <h3 class="app-card__name">BlocNote</h3>
+                    <img class="app-card__icon" src="assets/images/BlocNote.png" alt="Ícono de BlocNote">
+                    <p class="app-card__details">Bloc de notas para android.</p>
+                    <a href="downloads/BlocNote.apk" class="app-card__download" data-download>
+                      <span>Descarga</span>
+                    </a>
+                  </article>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 3: Juegos -->
+            <div class="carousel__slide">
+              <div class="card card--wide">
+                <h2 class="section__title">Juegos</h2>
+                <div class="app-grid">
+                  <article class="app-card">
+                    <h3 class="app-card__name">Patra</h3>
+                    <img class="app-card__icon" src="assets/images/Patra.png" alt="Ícono Patras">
+                    <p class="app-card__details">Juego de recoleccion y rpg.</p>
+                    <a href="downloads/Patras.rar" class="app-card__download" data-download>
+                      <span>Descarga</span>
+                    </a>
+                  </article>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <button type="button" class="carousel__arrow carousel__arrow--next" aria-label="Slide siguiente">&#10095;</button>
+
+        <!-- Los puntos se generan solos en JS según cuántos
+             .carousel__slide haya (acá van a ser 2: uno por sección) -->
+        <div class="carousel__dots" id="proyectosDots"></div>
+      </div>
+    </section>
+      </div>
+    </section>
+
+    <!-- Sección 5: Stack Informático (marquee infinito) -->
+    <section id="stack" class="section">
+      <div class="card card--wide card--gradient">
+        <h2 class="section__title">Stack Informático</h2>
+
+        <!-- Grupo A + grupo B (copia) para loop infinito sin cortes -->
+        <div class="stack-marquee">
+          <div class="stack-marquee__track">
+
+            <div class="stack-marquee__group">
+              <div class="stack-icon"><img src="assets/images/html.svg" alt="HTML"><span class="stack-icon__label">HTML</span></div>
+              <div class="stack-icon"><img src="assets/images/css.svg" alt="CSS"><span class="stack-icon__label">CSS</span></div>
+              <div class="stack-icon"><img src="assets/images/js.svg" alt="JavaScript"><span class="stack-icon__label">JavaScript</span></div>
+              <div class="stack-icon"><img src="assets/images/nodejs.svg" alt="Node.js"><span class="stack-icon__label">Node.js</span></div>
+              <div class="stack-icon"><img src="assets/images/csharp.svg" alt="C#"><span class="stack-icon__label">C#</span></div>
+              <div class="stack-icon"><img src="assets/images/c++.svg" alt="C++"><span class="stack-icon__label">C++</span></div>
+              <div class="stack-icon"><img src="assets/images/kotlin.svg" alt="Kotlin"><span class="stack-icon__label">Kotlin</span></div>
+              <div class="stack-icon"><img src="assets/images/godot.svg" alt="Godot"><span class="stack-icon__label">Godot</span></div>
+              <div class="stack-icon"><img src="assets/images/mysql.svg" alt="MySQL"><span class="stack-icon__label">MySQL</span></div>
+              <div class="stack-icon"><img src="assets/images/vercel.svg" alt="Vercel"><span class="stack-icon__label">Vercel</span></div>
+              <div class="stack-icon"><img src="assets/images/github.svg" alt="GitHub"><span class="stack-icon__label">GitHub</span></div>
+              <div class="stack-icon"><img src="assets/images/vs.svg" alt="Visual Studio"><span class="stack-icon__label">Visual Studio</span></div>
+              <div class="stack-icon"><img src="assets/images/vsc.svg" alt="Visual Studio Code"><span class="stack-icon__label">VS Code</span></div>
+              <div class="stack-icon"><img src="assets/images/cloudflare.svg" alt="Cloudflare"><span class="stack-icon__label">Cloudflare</span></div>
+            </div>
+
+            <!-- Grupo B: copia de A, oculta a lectores de pantalla -->
+            <div class="stack-marquee__group" aria-hidden="true">
+              <div class="stack-icon"><img src="assets/images/html.svg" alt=""><span class="stack-icon__label">HTML</span></div>
+              <div class="stack-icon"><img src="assets/images/css.svg" alt=""><span class="stack-icon__label">CSS</span></div>
+              <div class="stack-icon"><img src="assets/images/js.svg" alt=""><span class="stack-icon__label">JavaScript</span></div>
+              <div class="stack-icon"><img src="assets/images/nodejs.svg" alt=""><span class="stack-icon__label">Node.js</span></div>
+              <div class="stack-icon"><img src="assets/images/csharp.svg" alt=""><span class="stack-icon__label">C#</span></div>
+              <div class="stack-icon"><img src="assets/images/c++.svg" alt=""><span class="stack-icon__label">C++</span></div>
+              <div class="stack-icon"><img src="assets/images/kotlin.svg" alt=""><span class="stack-icon__label">Kotlin</span></div>
+              <div class="stack-icon"><img src="assets/images/godot.svg" alt=""><span class="stack-icon__label">Godot</span></div>
+              <div class="stack-icon"><img src="assets/images/mysql.svg" alt=""><span class="stack-icon__label">MySQL</span></div>
+              <div class="stack-icon"><img src="assets/images/vercel.svg" alt=""><span class="stack-icon__label">Vercel</span></div>
+              <div class="stack-icon"><img src="assets/images/github.svg" alt=""><span class="stack-icon__label">GitHub</span></div>
+              <div class="stack-icon"><img src="assets/images/vs.svg" alt=""><span class="stack-icon__label">Visual Studio</span></div>
+              <div class="stack-icon"><img src="assets/images/vsc.svg" alt=""><span class="stack-icon__label">VS Code</span></div>
+              <div class="stack-icon"><img src="assets/images/cloudflare.svg" alt="Cloudflare"><span class="stack-icon__label">Cloudflare</span></div>            
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 6: Estudios -->
+    <section id="estudios" class="section">
+      <div class="card card--wide card--gradient">
+        <h2 class="section__title section__title--left">Estudios</h2>
+        <div class="study">
+          <img class="study__image" src="assets/images/UTN.jpg" alt="Frente de la Universidad Tecnológica Nacional, Facultad Regional Pacheco">
+          <div class="study__text">
+            <h3>Universidad Tecnológica Nacional</h3>
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 7: Contacto -->
+    <section id="contacto" class="section contact">
+      <div class="contact__social">
+        <p class="contact__hint">¿Tenés una idea o un proyecto en mente? ¡Hablemos!</p>
+        <div class="contact__icons">
+          <a href="#" class="social-icon social-icon--whatsapp" target="_blank" rel="noopener" aria-label="WhatsApp"><img src="assets/images/whatsapp.svg" alt=""></a>
+          <a href="#" class="social-icon social-icon--gmail" target="_blank" rel="noopener" aria-label="Gmail"><img src="assets/images/gmail.svg" alt=""></a>
+          <a href="#" class="social-icon social-icon--instagram" target="_blank" rel="noopener" aria-label="instagram"><img src="assets/images/instagram.svg" alt=""></a>
+          <a href="#" class="social-icon social-icon--linkedin" target="_blank" rel="noopener" aria-label="linkedin"><img src="assets/images/linkedin.svg" alt=""></a>
+        </div>
+      </div>
+
+      <div class="contact__form-wrapper">
+        <h2 class="section__title">Contactá por Gmail <br></h2>
+
+        <!-- id usado por handleContactForm() en script.js -->
+        <form id="contactForm" class="contact-form" novalidate>
+          <label class="visually-hidden" for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+
+          <label class="visually-hidden" for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Tu email" required>
+
+          <label class="visually-hidden" for="mensaje">Mensaje</label>
+          <textarea id="mensaje" name="mensaje" placeholder="Contame sobre tu proyecto..." rows="6" required></textarea>
+
+          <button type="submit" class="btn btn--primary">Enviar</button>
+
+          <!-- script.js escribe el mensaje de éxito/error acá -->
+          <p class="contact-form__status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>&copy; <span id="year"></span> Framirez.dev - Todos los derechos reservados</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
