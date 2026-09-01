@@ -1,9 +1,6 @@
 {
   "buildCommand": "npm install",
   "outputDirectory": ".",
-  "env": {
-    "RESEND_API_KEY": "@RESEND_API_KEY"
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",
