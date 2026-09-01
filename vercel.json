@@ -1,0 +1,15 @@
+{
+  "buildCommand": "npm install",
+  "outputDirectory": ".",
+  "public": true,
+  "env": {
+    "EMAIL_USER": "@EMAIL_USER",
+    "EMAIL_PASS": "@EMAIL_PASS"
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/backend"
+    }
+  ]
+}

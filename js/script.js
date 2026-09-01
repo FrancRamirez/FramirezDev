@@ -265,7 +265,7 @@ function handleContactForm() {
 
   if (!form || !status) return;
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const nombre = form.nombre.value.trim();
@@ -283,17 +283,59 @@ function handleContactForm() {
       return;
     }
 
-    // TODO: conectar a backend/servicio de envío real (Formspree, EmailJS, etc.)
-    console.log('Formulario listo para enviar:', { nombre, email, mensaje });
+    // Desabilitar botón durante el envío
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Enviando...';
 
-    showStatus('¡Gracias! Tu mensaje fue enviado.', 'success');
-    form.reset();
+    try {
+      // Determinar URL del backend según el ambiente
+      const backendURL = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3001/api/send-email'
+        : '/api/send-email';
+
+      const response = await fetch(backendURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre,
+          email,
+          mensaje,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        showStatus(result.message || '✓ ¡Gracias! Tu mensaje fue enviado.', 'success');
+        form.reset();
+      } else {
+        showStatus(result.message || 'Error al enviar el mensaje. Intenta de nuevo.', 'error');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      showStatus('Error de conexión. Intenta de nuevo más tarde.', 'error');
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
+    }
   });
 
   function showStatus(message, type) {
     status.textContent = message;
     status.classList.remove('is-success', 'is-error');
     status.classList.add(type === 'success' ? 'is-success' : 'is-error');
+
+    // Limpiar mensaje después de 5 segundos si es error
+    if (type === 'error') {
+      setTimeout(() => {
+        status.textContent = '';
+        status.classList.remove('is-success', 'is-error');
+      }, 5000);
+    }
   }
 }
 

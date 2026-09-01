@@ -1,0 +1,26 @@
+{
+  "name": "framirez-portfolio",
+  "version": "1.0.0",
+  "description": "Portfolio de Francisco Ramirez - Desarrollador FullStack",
+  "main": "backend/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch backend/index.js",
+    "start": "node backend/index.js",
+    "vercel-build": "echo 'Build complete'"
+  },
+  "keywords": [
+    "portfolio",
+    "fullstack",
+    "developer"
+  ],
+  "author": "Francisco Ramirez",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "resend": "^3.0.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {}
+}
