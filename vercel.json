@@ -1,10 +1,8 @@
 {
   "buildCommand": "npm install",
   "outputDirectory": ".",
-  "public": true,
   "env": {
-    "EMAIL_USER": "@EMAIL_USER",
-    "EMAIL_PASS": "@EMAIL_PASS"
+    "RESEND_API_KEY": "@RESEND_API_KEY"
   },
   "rewrites": [
     {
