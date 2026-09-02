@@ -844,4 +844,7 @@ h1, h2, h3 {
   .app-grid {
     grid-template-columns: 1fr;
   }
+  .hero__media {
+    display: none;
+  }
 }
