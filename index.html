@@ -247,14 +247,21 @@
 
         <!-- id usado por handleContactForm() en script.js -->
         <form id="contactForm" class="contact-form" novalidate>
+          <!-- Honeypot anti-spam: campo oculto para humanos, visible para bots.
+               No le pongas type="hidden" (los bots lo saltean); se oculta por CSS. -->
+          <div class="contact-form__honeypot" aria-hidden="true">
+            <label for="website">Sitio web</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+          </div>
+
           <label class="visually-hidden" for="nombre" data-i18n="contact.labelNombre">Nombre</label>
-          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" data-i18n-placeholder="contact.placeholderNombre" required>
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" data-i18n-placeholder="contact.placeholderNombre" maxlength="100" required>
 
           <label class="visually-hidden" for="email" data-i18n="contact.labelEmail">Email</label>
           <input type="email" id="email" name="email" placeholder="Tu email" data-i18n-placeholder="contact.placeholderEmail" required>
 
           <label class="visually-hidden" for="mensaje" data-i18n="contact.labelMensaje">Mensaje</label>
-          <textarea id="mensaje" name="mensaje" placeholder="Contame sobre tu proyecto..." data-i18n-placeholder="contact.placeholderMensaje" rows="6" required></textarea>
+          <textarea id="mensaje" name="mensaje" placeholder="Contame sobre tu proyecto..." data-i18n-placeholder="contact.placeholderMensaje" rows="6" maxlength="5000" required></textarea>
 
           <button type="submit" class="btn btn--primary" data-i18n="contact.submit">Enviar</button>
 

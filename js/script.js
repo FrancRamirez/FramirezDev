@@ -271,6 +271,7 @@ function handleContactForm() {
     const nombre = form.nombre.value.trim();
     const email = form.email.value.trim();
     const mensaje = form.mensaje.value.trim();
+    const website = form.website ? form.website.value.trim() : ''; // honeypot anti-bot
 
     const t = (key) => (window.I18N ? window.I18N.t(key) : key);
 
@@ -306,6 +307,7 @@ function handleContactForm() {
           nombre,
           email,
           mensaje,
+          website,
         }),
       });
 

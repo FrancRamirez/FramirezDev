@@ -79,6 +79,16 @@ h1, h2, h3 {
   white-space: nowrap;
 }
 
+/* Honeypot anti-spam del formulario de contacto: oculto para personas,
+   pero presente en el DOM (los bots simples lo completan igual). */
+.contact-form__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 /* 3. Navbar */
 .navbar {
   position: sticky;
