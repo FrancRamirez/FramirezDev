@@ -207,7 +207,7 @@ function initCarousel(name, options = {}) {
     slides.forEach((_, index) => {
       const dot = document.createElement('button');
       dot.type = 'button';
-      dot.setAttribute('aria-label', `Ir al slide ${index + 1}`);
+      dot.setAttribute('aria-label', window.I18N ? window.I18N.t('carousel.dotAria', { n: index + 1 }) : `Ir al slide ${index + 1}`);
       if (index === 0) dot.classList.add('is-active');
 
       dot.addEventListener('click', () => {
@@ -272,14 +272,16 @@ function handleContactForm() {
     const email = form.email.value.trim();
     const mensaje = form.mensaje.value.trim();
 
+    const t = (key) => (window.I18N ? window.I18N.t(key) : key);
+
     if (!nombre || !email || !mensaje) {
-      showStatus('Por favor completá todos los campos.', 'error');
+      showStatus(t('contact.errorFields'), 'error');
       return;
     }
 
     const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     if (!emailValido) {
-      showStatus('Ingresá un email válido.', 'error');
+      showStatus(t('contact.errorEmail'), 'error');
       return;
     }
 
@@ -287,7 +289,7 @@ function handleContactForm() {
     const submitButton = form.querySelector('button[type="submit"]');
     const originalText = submitButton.textContent;
     submitButton.disabled = true;
-    submitButton.textContent = 'Enviando...';
+    submitButton.textContent = t('contact.submitting');
 
     try {
       // Determinar URL del backend según el ambiente
@@ -310,14 +312,14 @@ function handleContactForm() {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        showStatus(result.message || '✓ ¡Gracias! Tu mensaje fue enviado.', 'success');
+        showStatus(result.message || t('contact.successDefault'), 'success');
         form.reset();
       } else {
-        showStatus(result.message || 'Error al enviar el mensaje. Intenta de nuevo.', 'error');
+        showStatus(result.message || t('contact.errorSendDefault'), 'error');
       }
     } catch (error) {
       console.error('Error:', error);
-      showStatus('Error de conexión. Intenta de nuevo más tarde.', 'error');
+      showStatus(t('contact.errorConnection'), 'error');
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = originalText;

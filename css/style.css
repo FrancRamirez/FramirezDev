@@ -156,6 +156,21 @@ h1, h2, h3 {
 .navbar__toggle.is-open span:nth-child(2) { opacity: 0; }
 .navbar__toggle.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
+/* Selector de idioma manual (funcional desde i18n.js, oculto por ahora).
+   Cuando se decida mostrarlo, alcanza con sacar esta clase del botón en el HTML. */
+/*.lang-toggle--hidden {
+  display: none;
+}*/
+.lang-toggle {
+  background: none;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.2));
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
 /* 4. Layout general de sección */
 .section {
   max-width: var(--max-width);
