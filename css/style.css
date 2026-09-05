@@ -158,9 +158,9 @@ h1, h2, h3 {
 
 /* Selector de idioma manual (funcional desde i18n.js, oculto por ahora).
    Cuando se decida mostrarlo, alcanza con sacar esta clase del botón en el HTML. */
-/*.lang-toggle--hidden {
+.lang-toggle--hidden {
   display: none;
-}*/
+}
 .lang-toggle {
   background: none;
   border: 1px solid var(--border, rgba(255, 255, 255, 0.2));
