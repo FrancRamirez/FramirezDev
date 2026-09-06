@@ -873,3 +873,17 @@ h1, h2, h3 {
     display: none;
   }
 }
+
+/* 14. Botón secundario (usado en el dashboard, ej. "Cerrar sesión") */
+.btn--ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn--ghost:hover {
+  background: var(--surface-soft);
+  border-color: var(--text-muted);
+}
+
+/* 15. Login/Registro -> css/auth.css */
+/* 16. Dashboard -> css/dashboard.css */

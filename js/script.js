@@ -7,7 +7,22 @@ document.addEventListener('DOMContentLoaded', () => {
   initCarousel('proyectos', { autoplayMs: 10000 });
   handleContactForm();
   setFooterYear();
+  initAccountLink();
 });
+
+
+// Si hay sesión activa, el link "Ingresar" del navbar pasa a ser "Dashboard"
+function initAccountLink() {
+  const link = document.getElementById('accountLink');
+  if (!link || !window.AuthAPI) return;
+
+  window.AuthAPI.me().then((user) => {
+    if (user) {
+      link.textContent = 'Dashboard';
+      link.href = 'dashboard.html';
+    }
+  });
+}
 
 
 // Menú hamburguesa (mobile)

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Francisco Ramirez</title>
+  <meta name="robots" content="noindex">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="starsCanvas"></canvas>
+
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <a href="index.html#inicio" class="navbar__logo">Framirez<span class="dot">.</span>dev</a>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div id="dashboardLoading" class="dashboard-loading" style="display:none;">Cargando...</div>
+
+    <div id="dashboardContent" style="display:block;">
+      <div class="dashboard-header">
+        <div class="dashboard-header__welcome">
+          <h1 id="dashboardWelcome">¡Hola, Franc!</h1>
+          <span id="dashboardRoleBadge" class="dashboard-header__role dashboard-header__role--admin">Admin</span>
+        </div>
+        <button type="button" class="btn btn--ghost" id="logoutBtn">Cerrar sesión</button>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="dashboard-card">
+          <h2>Tu cuenta</h2>
+          <p>Este es tu panel personal. Desde acá vamos a ir sumando funciones para usuarios registrados.</p>
+        </div>
+      </div>
+
+      <div id="adminSection" class="dashboard-grid" style="display:grid; margin-top: 1.5rem;">
+        <div class="dashboard-card dashboard-card--admin">
+          <h2>Panel de administración</h2>
+          <p>Sección visible solo para el rol admin. Acá va a ir la gestión de usuarios, contenidos, etc.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; <span id="year"></span> Framirez.dev - Todos los derechos reservados</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script src="js/auth.js"></script>
+  
+</body>
+</html>

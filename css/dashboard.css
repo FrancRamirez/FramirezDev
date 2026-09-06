@@ -1,0 +1,87 @@
+/* css/dashboard.css
+   Estilos de dashboard.html.
+   Depende de las variables definidas en css/style.css (--surface, --border,
+   --radius-lg, --accent-green, etc.), así que este archivo va SIEMPRE
+   después de style.css en el <head>. */
+
+.dashboard-main {
+  min-height: calc(100vh - 130px);
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--section-padding);
+  width: 100%;
+}
+
+.dashboard-loading {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 4rem 0;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard-header__welcome {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+.dashboard-header__welcome h1 {
+  font-size: 1.5rem;
+}
+
+.dashboard-header__role {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-sm);
+}
+.dashboard-header__role--admin {
+  background: var(--accent-green);
+  border-color: var(--accent-green);
+  color: #08170f;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.dashboard-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+}
+.dashboard-card h2 {
+  font-size: 1.15rem;
+  margin-bottom: 0.6rem;
+}
+.dashboard-card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.dashboard-card--admin {
+  border-color: var(--accent-green);
+}
+
+@media (max-width: 480px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
