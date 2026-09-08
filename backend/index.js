@@ -9,6 +9,9 @@ import loginHandler from '../api/auth/login.js';
 import registerHandler from '../api/auth/register.js';
 import logoutHandler from '../api/auth/logout.js';
 import meHandler from '../api/auth/me.js';
+import registrarVisitaHandler from '../api/visitas/registrar.js';
+import totalVisitasHandler from '../api/visitas/total.js';
+import detalleVisitasHandler from '../api/visitas/detalle.js';
 
 dotenv.config({ path: '.env.local' });
 
@@ -45,6 +48,9 @@ app.all('/api/auth/login', loginHandler);
 app.all('/api/auth/register', registerHandler);
 app.all('/api/auth/logout', logoutHandler);
 app.all('/api/auth/me', meHandler);
+app.all('/api/visitas/registrar', registrarVisitaHandler);
+app.all('/api/visitas/total', totalVisitasHandler);
+app.all('/api/visitas/detalle', detalleVisitasHandler);
 
 // Configurar Resend
 const resend = new Resend(process.env.RESEND_API_KEY);

@@ -831,6 +831,12 @@ h1, h2, h3 {
   border-top: 1px solid var(--border);
 }
 
+.footer__visitas {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
 /* 13. Responsive */
 @media (max-width: 900px) {
   .hero,

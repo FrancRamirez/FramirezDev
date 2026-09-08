@@ -31,6 +31,7 @@
           <h1 id="dashboardWelcome"></h1>
           <span id="dashboardRoleBadge" class="dashboard-header__role"></span>
         </div>
+        <div class="dashboard-header__visitas">Visitas este mes: <span data-visitas-total>—</span></div>
         <button type="button" class="btn btn--ghost" id="logoutBtn">Cerrar sesión</button>
       </div>
 
@@ -46,6 +47,44 @@
           <h2>Panel de administración</h2>
           <p>Sección visible solo para el rol admin. Acá va a ir la gestión de usuarios, contenidos, etc.</p>
         </div>
+
+        <div class="dashboard-card dashboard-card--admin dashboard-card--visitas">
+          <div class="dashboard-card__header">
+            <h2>Visitas</h2>
+            <select id="visitasPeriodoSelect" class="visitas-periodo-select" aria-label="Mes"></select>
+          </div>
+
+          <div class="visitas-resumen">
+            <div class="visitas-resumen__item">
+              <span class="visitas-resumen__valor" id="visitasResumenTotal">0</span>
+              <span class="visitas-resumen__label">Total</span>
+            </div>
+            <div class="visitas-resumen__item">
+              <span class="visitas-resumen__valor" id="visitasResumenUsuarios">0</span>
+              <span class="visitas-resumen__label">Usuarios</span>
+            </div>
+            <div class="visitas-resumen__item">
+              <span class="visitas-resumen__valor" id="visitasResumenVisitantes">0</span>
+              <span class="visitas-resumen__label">Visitantes</span>
+            </div>
+          </div>
+
+          <h3>Por usuario registrado</h3>
+          <div class="visitas-table-wrap">
+            <table class="visitas-table" id="visitasTablaUsuarios">
+              <thead><tr><th>Usuario</th><th>Visitas</th><th>Última visita</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <h3>Por visitante anónimo</h3>
+          <div class="visitas-table-wrap">
+            <table class="visitas-table" id="visitasTablaVisitantes">
+              <thead><tr><th>ID de visitante</th><th>Visitas</th><th>Última visita</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -56,6 +95,7 @@
 
   <script src="js/script.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/visitas.js"></script>
   <script src="js/dashboard.js"></script>
 </body>
 </html>

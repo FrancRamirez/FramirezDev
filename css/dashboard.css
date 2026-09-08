@@ -79,6 +79,88 @@
   border-color: var(--accent-green);
 }
 
+.dashboard-header__visitas {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.dashboard-card--visitas {
+  grid-column: 1 / -1;
+}
+
+.dashboard-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.dashboard-card__header h2 {
+  margin-bottom: 0;
+}
+
+.visitas-periodo-select {
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--text-main, inherit);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+}
+
+.visitas-resumen {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.visitas-resumen__item {
+  display: flex;
+  flex-direction: column;
+}
+.visitas-resumen__valor {
+  font-family: var(--font-display, var(--font-body));
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.visitas-resumen__label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dashboard-card--visitas h3 {
+  font-size: 0.95rem;
+  margin: 1.25rem 0 0.6rem;
+}
+
+.visitas-table-wrap {
+  overflow-x: auto;
+}
+
+.visitas-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.visitas-table th,
+.visitas-table td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.visitas-table th {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
 @media (max-width: 480px) {
   .dashboard-header {
     flex-direction: column;
