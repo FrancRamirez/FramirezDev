@@ -3,6 +3,7 @@ import {
   registrarVisita,
   buildVisitorCookie,
   obtenerTotalPeriodo,
+  obtenerTotalGeneral,
 } from '../../lib/visits.js';
 
 const ALLOWED_ORIGINS = [
@@ -13,6 +14,10 @@ if (process.env.NODE_ENV === 'development') {
   ALLOWED_ORIGINS.push('http://localhost:3001', 'http://localhost:3000');
 }
 
+// Cuenta SIEMPRE una visita nueva: la anti-inflación (una visita por
+// sesión de navegador) la decide el cliente antes de llamar acá —
+// ver js/visitas.js, que solo pega este POST una vez por sessionStorage
+// (se resetea al cerrar la pestaña/ventana).
 export default async (req, res) => {
   const origin = req.headers.origin;
   if (origin && ALLOWED_ORIGINS.includes(origin)) {
@@ -43,8 +48,11 @@ export default async (req, res) => {
       res.setHeader('Set-Cookie', buildVisitorCookie(visitorId));
     }
 
-    const total = await obtenerTotalPeriodo();
-    res.status(200).json({ success: true, total });
+    const [total, totalGeneral] = await Promise.all([
+      obtenerTotalPeriodo(),
+      obtenerTotalGeneral(),
+    ]);
+    res.status(200).json({ success: true, total, totalGeneral });
   } catch (error) {
     console.error('Error en /api/visitas/registrar:', error);
     res.status(500).json({

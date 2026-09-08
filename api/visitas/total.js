@@ -1,4 +1,4 @@
-import { obtenerTotalPeriodo } from '../../lib/visits.js';
+import { obtenerTotalPeriodo, obtenerTotalGeneral } from '../../lib/visits.js';
 
 const ALLOWED_ORIGINS = [
   'https://framirezdev.com.ar',
@@ -26,8 +26,11 @@ export default async (req, res) => {
   }
 
   try {
-    const total = await obtenerTotalPeriodo();
-    res.status(200).json({ success: true, total });
+    const [total, totalGeneral] = await Promise.all([
+      obtenerTotalPeriodo(),
+      obtenerTotalGeneral(),
+    ]);
+    res.status(200).json({ success: true, total, totalGeneral });
   } catch (error) {
     console.error('Error en /api/visitas/total:', error);
     res.status(500).json({
