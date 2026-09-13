@@ -1,13 +1,13 @@
 // js/auth.js
 //
 // Helpers compartidos entre login.html, registro.html y dashboard.html
-// para hablar con /api/auth/*. Todas las requests van con
+// para hablar con /api/auth (?action=). Todas las requests van con
 // credentials: 'include' para que el navegador mande/reciba la cookie
 // httpOnly de sesión.
 
 const AuthAPI = {
   async register(username, password) {
-    const res = await fetch('/api/auth/register', {
+    const res = await fetch('/api/auth?action=register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -17,7 +17,7 @@ const AuthAPI = {
   },
 
   async login(username, password) {
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch('/api/auth?action=login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -27,7 +27,7 @@ const AuthAPI = {
   },
 
   async logout() {
-    const res = await fetch('/api/auth/logout', {
+    const res = await fetch('/api/auth?action=logout', {
       method: 'POST',
       credentials: 'include',
     });
@@ -35,7 +35,7 @@ const AuthAPI = {
   },
 
   async me() {
-    const res = await fetch('/api/auth/me', {
+    const res = await fetch('/api/auth?action=me', {
       method: 'GET',
       credentials: 'include',
     });

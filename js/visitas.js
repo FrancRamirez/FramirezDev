@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   try {
     const res = await fetch(
-      yaRegistradaEnEstaSesion ? '/api/visitas/total' : '/api/visitas/registrar',
+      yaRegistradaEnEstaSesion ? '/api/visitas?action=total' : '/api/visitas?action=registrar',
       {
         method: yaRegistradaEnEstaSesion ? 'GET' : 'POST',
         credentials: 'include',

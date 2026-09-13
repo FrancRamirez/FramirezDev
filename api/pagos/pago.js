@@ -4,12 +4,14 @@
 // para no gastar 2 funciones serverless del límite de 12 que tiene el
 // plan Hobby de Vercel:
 //
-//   GET  -> antes era api/pagos/config.js
-//           Devuelve la Public Key de Mercado Pago (diseñada para
+//   GET  -> Devuelve la Public Key de Mercado Pago (diseñada para
 //           exponerse en el frontend) + precio/título del producto.
-//   POST -> antes era api/pagos/procesar-pago.js
-//           Recibe los datos del Card Payment Brick y crea el pago real
+//   POST -> Recibe los datos del Card Payment Brick y crea el pago real
 //           contra la API de Mercado Pago.
+//
+// (api/pagos/config.js y api/pagos/procesar-pago.js existían como
+// archivos sueltos con esta misma lógica pero ya no los llamaba nadie
+// del frontend; se borraron para no gastar funciones serverless de más.)
 //
 // Toda la config sensible (Access Token, precio) sigue viviendo en
 // lib/mercadopago.js — este archivo no la toca directamente.

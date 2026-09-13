@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 // mes actual si no se pasa ninguno, y lo pinta en la tarjeta de Visitas.
 async function cargarVisitas(periodo) {
   const url = periodo
-    ? `/api/visitas/detalle?periodo=${encodeURIComponent(periodo)}`
-    : '/api/visitas/detalle';
+    ? `/api/visitas?action=detalle&periodo=${encodeURIComponent(periodo)}`
+    : '/api/visitas?action=detalle';
 
   const res = await fetch(url, { credentials: 'include' });
   if (!res.ok) return;

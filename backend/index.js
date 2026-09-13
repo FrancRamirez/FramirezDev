@@ -5,13 +5,8 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import loginHandler from '../api/auth/login.js';
-import registerHandler from '../api/auth/register.js';
-import logoutHandler from '../api/auth/logout.js';
-import meHandler from '../api/auth/me.js';
-import registrarVisitaHandler from '../api/visitas/registrar.js';
-import totalVisitasHandler from '../api/visitas/total.js';
-import detalleVisitasHandler from '../api/visitas/detalle.js';
+import authHandler from '../api/auth/index.js';
+import visitasHandler from '../api/visitas/index.js';
 
 dotenv.config({ path: '.env.local' });
 
@@ -35,22 +30,20 @@ process.on('uncaughtException', (err) => {
 app.use(cors());
 app.use(express.json());
 
-// Rutas de autenticación.
+// Rutas de autenticación y visitas.
 //
-// api/auth/*.js está escrito con la firma estándar (req, res) que usan
-// las funciones serverless de Vercel, así que en producción Vercel las
-// detecta solo con que existan en la carpeta api/. Para poder probarlas
-// acá en local con "npm run dev" (sin instalar el CLI de Vercel), las
-// montamos directo como si fueran rutas de Express: usan .status(),
-// .json() y .setHeader(), que también existen en el objeto `res` de
-// Express, así que funcionan sin cambios.
-app.all('/api/auth/login', loginHandler);
-app.all('/api/auth/register', registerHandler);
-app.all('/api/auth/logout', logoutHandler);
-app.all('/api/auth/me', meHandler);
-app.all('/api/visitas/registrar', registrarVisitaHandler);
-app.all('/api/visitas/total', totalVisitasHandler);
-app.all('/api/visitas/detalle', detalleVisitasHandler);
+// api/auth/index.js y api/visitas/index.js están escritos con la firma
+// estándar (req, res) que usan las funciones serverless de Vercel, así
+// que en producción Vercel las detecta solo con que existan en la
+// carpeta api/. Para poder probarlas acá en local con "npm run dev"
+// (sin instalar el CLI de Vercel), las montamos directo como si fueran
+// rutas de Express: usan .status(), .json() y .setHeader(), que también
+// existen en el objeto `res` de Express, así que funcionan sin cambios.
+// La acción concreta (login/logout/me/register, detalle/registrar/total)
+// se resuelve adentro de cada handler vía ?action=... — Express matchea
+// el path solo, así que req.query.action llega igual.
+app.all('/api/auth', authHandler);
+app.all('/api/visitas', visitasHandler);
 
 // Configurar Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -141,10 +134,10 @@ app.get('/api/info', (req, res) => {
     endpoints: {
       health: '/api/health',
       sendEmail: 'POST /api/send-email',
-      register: 'POST /api/auth/register',
-      login: 'POST /api/auth/login',
-      logout: 'POST /api/auth/logout',
-      me: 'GET /api/auth/me',
+      register: 'POST /api/auth?action=register',
+      login: 'POST /api/auth?action=login',
+      logout: 'POST /api/auth?action=logout',
+      me: 'GET /api/auth?action=me',
     },
   });
 });
