@@ -87,7 +87,7 @@ async function handlePost(req, res) {
       });
     }
 
-    const { precio, titulo, appId, moneda } = getProductoConfig();
+    const { precio, titulo, appId } = getProductoConfig();
     const paymentClient = getPaymentClient();
 
     const resultado = await paymentClient.create({
@@ -98,7 +98,6 @@ async function handlePost(req, res) {
         installments: Number(installments) || 1,
         payment_method_id,
         issuer_id,
-        currency_id: moneda,
         payer: {
           email: payer.email,
           identification: payer.identification,
