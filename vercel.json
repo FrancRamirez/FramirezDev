@@ -6,7 +6,7 @@
       "memory": 128,
       "maxDuration": 10
     },
-    "api/pagos/procesar-pago.js": {
+    "api/pagos/pago.js": {
       "memory": 128,
       "maxDuration": 10
     },

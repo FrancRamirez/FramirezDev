@@ -1,10 +1,14 @@
 // api/pagos/descargar.js
 //
-// Valida el token de descarga (generado tras un pago aprobado) y
-// redirige al archivo real, alojado en el Blob store de Vercel
-// ("framirez-dev-blob"). Mantener el link real fuera de una URL pública
-// fija evita que se comparta sin haber pagado: acá siempre se valida el
-// token contra la compra antes de resolver la URL del Blob.
+// Resuelve las descargas de apps del portfolio contra el Blob store de
+// Vercel ("framirez-dev-blob"). Combina 2 casos en un solo archivo para
+// no gastar 2 funciones serverless del límite de 12 del plan Hobby:
+//
+//   ?token=...   -> descarga PAGA: valida que exista una compra aprobada
+//                    con ese token antes de resolver el archivo real.
+//   ?archivo=... -> descarga GRATIS: solo restringido a una lista fija de
+//                    nombres permitidos (Galería, BlocNote, Patra), sin
+//                    pago de por medio.
 
 import { buscarCompraPorToken } from '../../lib/compras.js';
 import { getBlobUrl } from '../../lib/blob.js';
@@ -15,17 +19,31 @@ const ARCHIVOS_POR_APP = {
   videolader: 'Videolader.apk',
 };
 
+// Nombres de descargas gratuitas permitidos, tal cual se subieron al Blob.
+const ARCHIVOS_GRATIS = new Set(['Galeria.apk', 'BlocNote.apk', 'Patra.rar']);
+
 export default async (req, res) => {
   if (req.method !== 'GET') {
     return res.status(405).end();
   }
 
-  const { token } = req.query || {};
-  if (!token) {
-    return res.status(400).send('Falta el token de descarga.');
-  }
+  const { token, archivo } = req.query || {};
 
   try {
+    // Caso 1: descarga gratuita, directa por nombre de archivo.
+    if (archivo) {
+      if (!ARCHIVOS_GRATIS.has(archivo)) {
+        return res.status(404).send('Archivo no encontrado.');
+      }
+      const url = await getBlobUrl(archivo);
+      return res.redirect(302, url);
+    }
+
+    // Caso 2: descarga paga, requiere token de una compra aprobada.
+    if (!token) {
+      return res.status(400).send('Falta el token de descarga.');
+    }
+
     const compra = await buscarCompraPorToken(token);
 
     if (!compra || compra.estado !== 'aprobado') {
@@ -41,7 +59,7 @@ export default async (req, res) => {
     const url = await getBlobUrl(nombreArchivo);
     res.redirect(302, url);
   } catch (error) {
-    console.error('Error al validar la descarga:', error);
+    console.error('Error al procesar la descarga:', error);
     res.status(500).send('Hubo un error al procesar la descarga.');
   }
 };

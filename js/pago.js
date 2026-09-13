@@ -2,10 +2,10 @@
 //
 // Maneja el botón "Comprar" de la sección Aplicaciones:
 //   1) Abre el modal y pide la config pública (public key, precio) a
-//      /api/pagos/config
+//      /api/pagos/pago (GET)
 //   2) Inicializa el Card Payment Brick del SDK de Mercado Pago dentro
 //      del modal
-//   3) Al enviar, manda los datos del Brick a /api/pagos/procesar-pago
+//   3) Al enviar, manda los datos del Brick a /api/pagos/pago (POST)
 //   4) Muestra el resultado (aprobado / rechazado / en revisión) y, si
 //      corresponde, el link de descarga
 //
@@ -41,7 +41,7 @@
     statusEl.textContent = 'Cargando...';
 
     try {
-      const resp = await fetch('/api/pagos/config');
+      const resp = await fetch('/api/pagos/pago');
       const config = await resp.json();
       if (!resp.ok) throw new Error(config.error || 'No se pudo cargar la configuración de pago.');
 
@@ -77,7 +77,7 @@
   async function procesarPago(cardFormData) {
     statusEl.textContent = 'Procesando pago...';
 
-    const resp = await fetch('/api/pagos/procesar-pago', {
+    const resp = await fetch('/api/pagos/pago', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(cardFormData),
