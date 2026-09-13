@@ -125,7 +125,7 @@
                     <h3 class="app-card__name">Galeria</h3>
                     <img class="app-card__icon" src="assets/images/Galeria.png" alt="Ícono de Galeria" data-i18n-alt="projects.galeria.iconAlt">
                     <p class="app-card__details" data-i18n="projects.galeria.details">Galeria de fotos.</p>
-                    <a href="downloads/Galeria.apk" class="app-card__download" data-download>
+                    <a href="/api/descargas/gratis?archivo=Galeria.apk" class="app-card__download" data-download>
                       <span data-i18n="projects.download">Descarga</span>
                     </a>
                   </article>
@@ -133,9 +133,17 @@
                     <h3 class="app-card__name">BlocNote</h3>
                     <img class="app-card__icon" src="assets/images/BlocNote.png" alt="Ícono de BlocNote" data-i18n-alt="projects.blocnote.iconAlt">
                     <p class="app-card__details" data-i18n="projects.blocnote.details">Bloc de notas para android.</p>
-                    <a href="downloads/BlocNote.apk" class="app-card__download" data-download>
+                    <a href="/api/descargas/gratis?archivo=BlocNote.apk" class="app-card__download" data-download>
                       <span data-i18n="projects.download">Descarga</span>
                     </a>
+                  </article>
+                  <article class="app-card" data-app-id="app-nueva" data-app-precio="">
+                    <h3 class="app-card__name" data-i18n="projects.appNueva.name">VideoLader</h3>
+                    <img class="app-card__icon placeholder--square" src="assets/images/Icon.png" alt="Ícono de la app" data-i18n-alt="projects.appNueva.iconAlt">
+                    <p class="app-card__details" data-i18n="projects.appNueva.details">Descargador de videos y musica sin anuncios para Youtube.</p>
+                    <button type="button" class="app-card__download app-card__buy" data-buy-app data-app-id="app-nueva">
+                      <span data-i18n="projects.buy">Comprar</span>
+                    </button>
                   </article>
                 </div>
               </div>
@@ -150,7 +158,7 @@
                     <h3 class="app-card__name">Patra</h3>
                     <img class="app-card__icon" src="assets/images/Patra.png" alt="Ícono Patras" data-i18n-alt="projects.patra.iconAlt">
                     <p class="app-card__details" data-i18n="projects.patra.details">Juego de recoleccion y derrotar enemigos (Solo para escritorio).</p>
-                    <a href="downloads/Patra.rar" class="app-card__download" data-download download="Patra.rar">
+                    <a href="/api/descargas/gratis?archivo=Patra.rar" class="app-card__download" data-download download="Patra.rar">
                       <span data-i18n="projects.download">Descarga</span>
                     </a>
                   </article>
@@ -274,6 +282,17 @@
 
   </main>
 
+  <!-- Modal de compra (Mercado Pago Checkout Bricks) - ver js/pago.js -->
+  <div class="pago-modal" id="pagoModal" hidden aria-hidden="true">
+    <div class="pago-modal__overlay" data-pago-cerrar></div>
+    <div class="pago-modal__box" role="dialog" aria-modal="true" aria-labelledby="pagoModalTitulo">
+      <button type="button" class="pago-modal__cerrar" data-pago-cerrar aria-label="Cerrar" data-i18n-aria-label="pago.cerrarAria">&times;</button>
+      <h2 id="pagoModalTitulo" data-i18n="pago.titulo">Completar compra</h2>
+      <div id="paymentBrick_container"></div>
+      <p class="pago-modal__status" id="pagoStatus" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+
   <footer class="footer">
     <p>&copy; <span id="year"></span> Framirez.dev - <span data-i18n="footer.rights">Todos los derechos reservados</span></p>
     <p class="footer__visitas">Visitas totales: <span data-visitas-total-general>—</span></p>
@@ -283,5 +302,7 @@
   <script src="js/auth.js"></script>
   <script src="js/script.js"></script>
   <script src="js/visitas.js"></script>
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <script src="js/pago.js"></script>
 </body>
 </html>

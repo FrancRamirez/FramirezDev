@@ -5,6 +5,14 @@
     "api/send-email.js": {
       "memory": 128,
       "maxDuration": 10
+    },
+    "api/pagos/procesar-pago.js": {
+      "memory": 128,
+      "maxDuration": 10
+    },
+    "api/pagos/webhook.js": {
+      "memory": 128,
+      "maxDuration": 10
     }
   }
 }

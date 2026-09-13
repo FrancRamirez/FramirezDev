@@ -63,6 +63,13 @@ const I18N_TRANSLATIONS = {
     'projects.blocnote.iconAlt': 'Ícono de BlocNote',
     'projects.blocnote.details': 'Bloc de notas para android.',
     'projects.download': 'Descarga',
+    'projects.buy': 'Comprar',
+    'projects.appNueva.name': 'App Nueva',
+    'projects.appNueva.iconAlt': 'Ícono de la app',
+    'projects.appNueva.details': 'Descripción de la app.',
+
+    'pago.titulo': 'Completar compra',
+    'pago.cerrarAria': 'Cerrar',
 
     'projects.gamesTitle': 'Juegos',
     'projects.patra.iconAlt': 'Ícono Patras',
@@ -130,6 +137,13 @@ const I18N_TRANSLATIONS = {
     'projects.blocnote.iconAlt': 'BlocNote icon',
     'projects.blocnote.details': 'Notes app for Android.',
     'projects.download': 'Download',
+    'projects.buy': 'Buy',
+    'projects.appNueva.name': 'New App',
+    'projects.appNueva.iconAlt': 'App icon',
+    'projects.appNueva.details': 'App description.',
+
+    'pago.titulo': 'Complete purchase',
+    'pago.cerrarAria': 'Close',
 
     'projects.gamesTitle': 'Games',
     'projects.patra.iconAlt': 'Patra icon',

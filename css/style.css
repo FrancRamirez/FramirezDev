@@ -574,6 +574,67 @@ h1, h2, h3 {
   background: var(--accent-green-hover);
   transform: translateY(-1px);
 }
+/* El botón "Comprar" es un <button>, no un <a>: mismo estilo que descarga,
+   pero visible siempre (no depende de [data-download]) */
+.app-card__buy {
+  display: inline-block;
+  border: none;
+  font-family: var(--font-body);
+}
+
+/* Modal de compra (Mercado Pago Checkout Bricks) */
+.pago-modal[hidden] {
+  display: none;
+}
+.pago-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pago-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 8, 20, 0.75);
+}
+.pago-modal__box {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  max-width: 480px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.pago-modal__cerrar {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.pago-modal__cerrar:hover {
+  color: var(--text);
+}
+.pago-modal__status {
+  margin-top: 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.pago-modal__descarga {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--accent-green);
+  font-weight: 600;
+}
 
 /* 9. Stack informático — marquee de íconos (loop infinito) */
 .stack-marquee {
