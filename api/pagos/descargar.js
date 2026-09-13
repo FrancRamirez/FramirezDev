@@ -1,17 +1,24 @@
 // api/pagos/descargar.js
 //
 // Resuelve las descargas de apps del portfolio contra el Blob store de
-// Vercel ("framirez-dev-blob"). Combina 2 casos en un solo archivo para
-// no gastar 2 funciones serverless del límite de 12 del plan Hobby:
+// Vercel ("framirez-dev-blob"). Combina 3 casos en un solo archivo para
+// no gastar funciones serverless de más del límite de 12 del plan Hobby:
 //
-//   ?token=...   -> descarga PAGA: valida que exista una compra aprobada
-//                    con ese token antes de resolver el archivo real.
-//   ?archivo=... -> descarga GRATIS: solo restringido a una lista fija de
-//                    nombres permitidos (Galería, BlocNote, Patra), sin
-//                    pago de por medio.
+//   ?app=...     -> descarga PAGA, mecanismo principal: requiere sesión
+//                    iniciada y que esa cuenta tenga una compra aprobada
+//                    de esa app. Como resuelve el archivo por nombre en
+//                    el Blob (no por versión), si el día de mañana subís
+//                    una actualización con el mismo nombre, el comprador
+//                    la descarga sola, sin volver a pagar ni pedir nada.
+//   ?token=...   -> descarga PAGA, mecanismo de respaldo (de antes de
+//                    exigir login): valida el token de una sola compra.
+//                    Se mantiene por compatibilidad con compras viejas.
+//   ?archivo=... -> descarga GRATIS: lista fija de nombres permitidos
+//                    (Galería, BlocNote, Patra), sin pago de por medio.
 
-import { buscarCompraPorToken } from '../../lib/compras.js';
+import { buscarCompraPorToken, usuarioComproApp } from '../../lib/compras.js';
 import { getBlobUrl } from '../../lib/blob.js';
+import { readSessionToken, verifySessionToken } from '../../lib/auth.js';
 
 // Mapeo appId -> nombre del archivo tal cual se subió al Blob store.
 // Al agregar más apps de pago, sumar la entrada acá.
@@ -27,7 +34,7 @@ export default async (req, res) => {
     return res.status(405).end();
   }
 
-  const { token, archivo } = req.query || {};
+  const { token, archivo, app: appId } = req.query || {};
 
   try {
     // Caso 1: descarga gratuita, directa por nombre de archivo.
@@ -39,7 +46,32 @@ export default async (req, res) => {
       return res.redirect(302, url);
     }
 
-    // Caso 2: descarga paga, requiere token de una compra aprobada.
+    // Caso 2: descarga paga por cuenta (mecanismo principal, permanente).
+    if (appId) {
+      const sesionToken = readSessionToken(req);
+      const sesion = sesionToken ? verifySessionToken(sesionToken) : null;
+      if (!sesion) {
+        return res
+          .status(401)
+          .send('Necesitás iniciar sesión con la cuenta que compró esta app para descargarla.');
+      }
+
+      const compro = await usuarioComproApp(sesion.id, appId);
+      if (!compro) {
+        return res.status(403).send('Tu cuenta no tiene una compra aprobada de esta app.');
+      }
+
+      const nombreArchivo = ARCHIVOS_POR_APP[appId];
+      if (!nombreArchivo) {
+        console.error(`No hay archivo configurado para app_id="${appId}" en ARCHIVOS_POR_APP.`);
+        return res.status(500).send('La descarga todavía no está disponible. Contactanos.');
+      }
+
+      const url = await getBlobUrl(nombreArchivo);
+      return res.redirect(302, url);
+    }
+
+    // Caso 3: descarga paga por token de un solo uso (respaldo, compras viejas).
     if (!token) {
       return res.status(400).send('Falta el token de descarga.');
     }

@@ -5,19 +5,22 @@
 // plan Hobby de Vercel:
 //
 //   GET  -> Devuelve la Public Key de Mercado Pago (diseñada para
-//           exponerse en el frontend) + precio/título del producto.
+//           exponerse en el frontend) + precio/título del producto, y si
+//           hay una sesión activa, si esa cuenta ya compró la app
+//           (yaComprado) — así el frontend puede mostrar "Descargar" en
+//           vez de "Comprar".
 //   POST -> Recibe los datos del Card Payment Brick y crea el pago real
-//           contra la API de Mercado Pago.
-//
-// (api/pagos/config.js y api/pagos/procesar-pago.js existían como
-// archivos sueltos con esta misma lógica pero ya no los llamaba nadie
-// del frontend; se borraron para no gastar funciones serverless de más.)
+//           contra la API de Mercado Pago. Requiere sesión activa: la
+//           compra se ata a la cuenta (usuario_id) para que el comprador
+//           pueda volver a descargar la app (y sus actualizaciones
+//           futuras) para siempre, con solo iniciar sesión.
 //
 // Toda la config sensible (Access Token, precio) sigue viviendo en
 // lib/mercadopago.js — este archivo no la toca directamente.
 
 import { getPaymentClient, getProductoConfig } from '../../lib/mercadopago.js';
-import { registrarCompra } from '../../lib/compras.js';
+import { registrarCompra, usuarioComproApp } from '../../lib/compras.js';
+import { readSessionToken, verifySessionToken } from '../../lib/auth.js';
 
 const ALLOWED_ORIGINS = [
   'https://framirezdev.com.ar',
@@ -25,6 +28,11 @@ const ALLOWED_ORIGINS = [
 ];
 if (process.env.NODE_ENV === 'development') {
   ALLOWED_ORIGINS.push('http://localhost:3001', 'http://localhost:3000');
+}
+
+function getSesionActual(req) {
+  const token = readSessionToken(req);
+  return token ? verifySessionToken(token) : null;
 }
 
 async function handleGet(req, res) {
@@ -35,7 +43,18 @@ async function handleGet(req, res) {
 
   try {
     const { precio, titulo, appId, moneda } = getProductoConfig();
-    res.status(200).json({ publicKey, precio, titulo, appId, moneda });
+    const sesion = getSesionActual(req);
+    const yaComprado = sesion ? await usuarioComproApp(sesion.id, appId) : false;
+
+    res.status(200).json({
+      publicKey,
+      precio,
+      titulo,
+      appId,
+      moneda,
+      autenticado: Boolean(sesion),
+      yaComprado,
+    });
   } catch (error) {
     console.error('Error al leer config de producto:', error);
     res.status(500).json({ error: 'Falta configurar el producto en las variables de entorno.' });
@@ -44,6 +63,15 @@ async function handleGet(req, res) {
 
 async function handlePost(req, res) {
   try {
+    const sesion = getSesionActual(req);
+    if (!sesion) {
+      return res.status(401).json({
+        success: false,
+        requiresAuth: true,
+        message: 'Necesitás iniciar sesión (o crear una cuenta) antes de comprar, para poder descargar la app y sus futuras actualizaciones desde tu cuenta.',
+      });
+    }
+
     const {
       token,
       payment_method_id,
@@ -76,7 +104,7 @@ async function handlePost(req, res) {
           identification: payer.identification,
         },
         // Evita que un doble click/reintento del navegador cree dos cobros.
-        external_reference: `${appId}-${payer.email}-${Date.now()}`,
+        external_reference: `${appId}-${sesion.username}-${Date.now()}`,
       },
     });
 
@@ -87,7 +115,8 @@ async function handlePost(req, res) {
         ? 'rechazado'
         : 'pendiente';
 
-    const { tokenDescarga } = await registrarCompra({
+    await registrarCompra({
+      usuarioId: sesion.id,
       appId,
       mpPaymentId: String(resultado.id),
       estado,
@@ -99,8 +128,11 @@ async function handlePost(req, res) {
       return res.status(200).json({
         success: true,
         status: 'approved',
-        message: '¡Pago aprobado! Ya podés descargar la app.',
-        downloadUrl: `/api/pagos/descargar?token=${tokenDescarga}`,
+        message: '¡Pago aprobado! Ya podés descargar la app desde tu cuenta.',
+        // Ya no depende de un token de un solo uso: como la compra quedó
+        // atada a la cuenta, este mismo link va a servir para siempre
+        // (incluidas futuras actualizaciones) mientras haya sesión iniciada.
+        downloadUrl: `/api/pagos/descargar?app=${appId}`,
       });
     }
 
@@ -135,6 +167,7 @@ export default async (req, res) => {
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();

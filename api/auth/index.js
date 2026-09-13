@@ -94,7 +94,7 @@ async function handleMe(req, res) {
 
   res.status(200).json({
     success: true,
-    user: { username: payload.username, role: payload.role },
+    user: { id: payload.id, username: payload.username, role: payload.role },
   });
 }
 
