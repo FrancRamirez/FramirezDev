@@ -14,20 +14,25 @@
 //                    exigir login): valida el token de una sola compra.
 //                    Se mantiene por compatibilidad con compras viejas.
 //   ?archivo=... -> descarga GRATIS: lista fija de nombres permitidos
-//                    (Galería, BlocNote, Patra), sin pago de por medio.
+//                    (Galería, BlocNote), sin pago de por medio.
 
 import { buscarCompraPorToken, usuarioComproApp } from '../../lib/compras.js';
 import { getBlobUrl } from '../../lib/blob.js';
 import { readSessionToken, verifySessionToken } from '../../lib/auth.js';
-
-// Mapeo appId -> nombre del archivo tal cual se subió al Blob store.
-// Al agregar más apps de pago, sumar la entrada acá.
-const ARCHIVOS_POR_APP = {
-  videolader: 'Videolader.apk',
-};
+import { PRODUCTOS } from '../../lib/productos.js';
 
 // Nombres de descargas gratuitas permitidos, tal cual se subieron al Blob.
-const ARCHIVOS_GRATIS = new Set(['Galeria.apk', 'BlocNote.apk', 'Patra.rar']);
+// Patra dejó de ser gratis (ver lib/productos.js) — sacado de esta lista.
+const ARCHIVOS_GRATIS = new Set(['Galeria.apk', 'BlocNote.apk']);
+
+async function resolverArchivoDeApp(appId) {
+  const producto = PRODUCTOS[appId];
+  if (!producto) {
+    console.error(`Producto desconocido: "${appId}". Revisá lib/productos.js.`);
+    return null;
+  }
+  return producto.archivoBlob;
+}
 
 export default async (req, res) => {
   if (req.method !== 'GET') {
@@ -61,9 +66,8 @@ export default async (req, res) => {
         return res.status(403).send('Tu cuenta no tiene una compra aprobada de esta app.');
       }
 
-      const nombreArchivo = ARCHIVOS_POR_APP[appId];
+      const nombreArchivo = await resolverArchivoDeApp(appId);
       if (!nombreArchivo) {
-        console.error(`No hay archivo configurado para app_id="${appId}" en ARCHIVOS_POR_APP.`);
         return res.status(500).send('La descarga todavía no está disponible. Contactanos.');
       }
 
@@ -82,9 +86,8 @@ export default async (req, res) => {
       return res.status(403).send('Este link de descarga no es válido o el pago no está aprobado.');
     }
 
-    const nombreArchivo = ARCHIVOS_POR_APP[compra.app_id];
+    const nombreArchivo = await resolverArchivoDeApp(compra.app_id);
     if (!nombreArchivo) {
-      console.error(`No hay archivo configurado para app_id="${compra.app_id}" en ARCHIVOS_POR_APP.`);
       return res.status(500).send('La descarga todavía no está disponible. Contactanos.');
     }
 

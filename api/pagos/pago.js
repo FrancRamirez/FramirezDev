@@ -5,21 +5,24 @@
 // plan Hobby de Vercel:
 //
 //   GET  -> Devuelve la Public Key de Mercado Pago (diseñada para
-//           exponerse en el frontend) + precio/título del producto, y si
-//           hay una sesión activa, si esa cuenta ya compró la app
+//           exponerse en el frontend) + el catálogo completo de
+//           lib/productos.js (precio/título de cada app en venta), y si
+//           hay sesión activa, cuáles de esas apps ya compró esa cuenta
 //           (yaComprado) — así el frontend puede mostrar "Descargar" en
-//           vez de "Comprar".
-//   POST -> Recibe los datos del Card Payment Brick y crea el pago real
-//           contra la API de Mercado Pago. Requiere sesión activa: la
-//           compra se ata a la cuenta (usuario_id) para que el comprador
-//           pueda volver a descargar la app (y sus actualizaciones
-//           futuras) para siempre, con solo iniciar sesión.
+//           vez de "Comprar" para cada una.
+//   POST -> Recibe qué app se está comprando (?app=videolader|patra) +
+//           los datos del Card Payment Brick, y crea el pago real contra
+//           la API de Mercado Pago. Requiere sesión activa: la compra se
+//           ata a la cuenta (usuario_id) para que el comprador pueda
+//           volver a descargar esa app (y sus actualizaciones futuras)
+//           para siempre, con solo iniciar sesión.
 //
-// Toda la config sensible (Access Token, precio) sigue viviendo en
-// lib/mercadopago.js — este archivo no la toca directamente.
+// Todo lo sensible (Access Token) sigue viviendo en lib/mercadopago.js;
+// el catálogo de productos (no sensible) vive en lib/productos.js.
 
-import { getPaymentClient, getProductoConfig } from '../../lib/mercadopago.js';
-import { registrarCompra, usuarioComproApp } from '../../lib/compras.js';
+import { getPaymentClient } from '../../lib/mercadopago.js';
+import { getProducto, listarProductos } from '../../lib/productos.js';
+import { registrarCompra, listarAppsCompradasPorUsuario } from '../../lib/compras.js';
 import { readSessionToken, verifySessionToken } from '../../lib/auth.js';
 
 const ALLOWED_ORIGINS = [
@@ -42,22 +45,25 @@ async function handleGet(req, res) {
   }
 
   try {
-    const { precio, titulo, appId, moneda } = getProductoConfig();
     const sesion = getSesionActual(req);
-    const yaComprado = sesion ? await usuarioComproApp(sesion.id, appId) : false;
+    const appsCompradas = sesion ? await listarAppsCompradasPorUsuario(sesion.id) : [];
+
+    const productos = listarProductos().map((p) => ({
+      appId: p.appId,
+      titulo: p.titulo,
+      precio: p.precio,
+      moneda: p.moneda,
+      yaComprado: appsCompradas.includes(p.appId),
+    }));
 
     res.status(200).json({
       publicKey,
-      precio,
-      titulo,
-      appId,
-      moneda,
       autenticado: Boolean(sesion),
-      yaComprado,
+      productos,
     });
   } catch (error) {
-    console.error('Error al leer config de producto:', error);
-    res.status(500).json({ error: 'Falta configurar el producto en las variables de entorno.' });
+    console.error('Error al leer el catálogo de productos:', error);
+    res.status(500).json({ error: 'No se pudo cargar la configuración de pago.' });
   }
 }
 
@@ -70,6 +76,18 @@ async function handlePost(req, res) {
         requiresAuth: true,
         message: 'Necesitás iniciar sesión (o crear una cuenta) antes de comprar, para poder descargar la app y sus futuras actualizaciones desde tu cuenta.',
       });
+    }
+
+    const { app: appId } = req.query || {};
+    if (!appId) {
+      return res.status(400).json({ success: false, message: 'Falta indicar qué producto se compra.' });
+    }
+
+    let producto;
+    try {
+      producto = getProducto(appId);
+    } catch {
+      return res.status(404).json({ success: false, message: 'Producto no encontrado.' });
     }
 
     const {
@@ -87,14 +105,13 @@ async function handlePost(req, res) {
       });
     }
 
-    const { precio, titulo, appId } = getProductoConfig();
     const paymentClient = getPaymentClient();
 
     const resultado = await paymentClient.create({
       body: {
-        transaction_amount: precio,
+        transaction_amount: producto.precio,
         token,
-        description: titulo,
+        description: producto.titulo,
         installments: Number(installments) || 1,
         payment_method_id,
         issuer_id,
@@ -103,7 +120,7 @@ async function handlePost(req, res) {
           identification: payer.identification,
         },
         // Evita que un doble click/reintento del navegador cree dos cobros.
-        external_reference: `${appId}-${sesion.username}-${Date.now()}`,
+        external_reference: `${producto.appId}-${sesion.username}-${Date.now()}`,
       },
     });
 
@@ -116,11 +133,11 @@ async function handlePost(req, res) {
 
     await registrarCompra({
       usuarioId: sesion.id,
-      appId,
+      appId: producto.appId,
       mpPaymentId: String(resultado.id),
       estado,
       email: payer.email,
-      monto: precio,
+      monto: producto.precio,
     });
 
     if (estado === 'aprobado') {
@@ -128,10 +145,10 @@ async function handlePost(req, res) {
         success: true,
         status: 'approved',
         message: '¡Pago aprobado! Ya podés descargar la app desde tu cuenta.',
-        // Ya no depende de un token de un solo uso: como la compra quedó
-        // atada a la cuenta, este mismo link va a servir para siempre
-        // (incluidas futuras actualizaciones) mientras haya sesión iniciada.
-        downloadUrl: `/api/pagos/descargar?app=${appId}`,
+        // No depende de un token de un solo uso: como la compra quedó
+        // atada a la cuenta, este mismo link sirve para siempre (incluidas
+        // futuras actualizaciones) mientras haya sesión iniciada.
+        downloadUrl: `/api/pagos/descargar?app=${producto.appId}`,
       });
     }
 
