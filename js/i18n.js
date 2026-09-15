@@ -67,6 +67,9 @@ const I18N_TRANSLATIONS = {
     'projects.videolader.name': 'Videolader',
     'projects.videolader.iconAlt': 'Ícono de Videolader',
     'projects.videolader.details': 'Descargador de videos y música sin anuncios para Youtube.',
+    'projects.multiextractor.name': 'Multi-Extractor',
+    'projects.multiextractor.iconAlt': 'Ícono de Multi-Extractor',
+    'projects.multiextractor.details': 'Descompilador de archivos múltiple (Escritorio/Windows).',
 
     'pago.titulo': 'Completar compra',
     'pago.cerrarAria': 'Cerrar',
@@ -141,6 +144,9 @@ const I18N_TRANSLATIONS = {
     'projects.videolader.name': 'Videolader',
     'projects.videolader.iconAlt': 'Videolader icon',
     'projects.videolader.details': 'Ad-free video and music downloader for Youtube.',
+    'projects.multiextractor.name': 'Multi-Extractor',
+    'projects.multiextractor.iconAlt': 'Multi-Extractor icon',
+    'projects.multiextractor.details': 'Multi-file archive extractor (Desktop/Windows).',
 
     'pago.titulo': 'Complete purchase',
     'pago.cerrarAria': 'Close',

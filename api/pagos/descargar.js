@@ -23,7 +23,7 @@ import { PRODUCTOS } from '../../lib/productos.js';
 
 // Nombres de descargas gratuitas permitidos, tal cual se subieron al Blob.
 // Patra dejó de ser gratis (ver lib/productos.js) — sacado de esta lista.
-const ARCHIVOS_GRATIS = new Set(['Galeria.apk', 'BlocNote.apk']);
+const ARCHIVOS_GRATIS = new Set(['Galeria.apk', 'BlocNote.apk', 'MultiExtractor_Freemium.rar']);
 
 async function resolverArchivoDeApp(appId) {
   const producto = PRODUCTOS[appId];
