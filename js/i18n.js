@@ -59,14 +59,14 @@ const I18N_TRANSLATIONS = {
 
     'projects.appsTitle': 'Aplicaciones',
     'projects.galeria.iconAlt': 'Ícono de Galeria',
-    'projects.galeria.details': 'Galeria de fotos.',
+    'projects.galeria.details': 'Galeria de fotos (android).',
     'projects.blocnote.iconAlt': 'Ícono de BlocNote',
-    'projects.blocnote.details': 'Bloc de notas para android.',
+    'projects.blocnote.details': 'Bloc de notas (android).',
     'projects.download': 'Descarga',
     'projects.buy': 'Comprar',
     'projects.videolader.name': 'Videolader',
     'projects.videolader.iconAlt': 'Ícono de Videolader',
-    'projects.videolader.details': 'Descargador de videos y música sin anuncios para Youtube.',
+    'projects.videolader.details': 'Descargador de videos y musica sin anuncios para Youtube (android).',
     'projects.multiextractor.name': 'Multi-Extractor',
     'projects.multiextractor.iconAlt': 'Ícono de Multi-Extractor',
     'projects.multiextractor.details': 'Descompilador de archivos múltiple (Escritorio/Windows).',
@@ -76,7 +76,7 @@ const I18N_TRANSLATIONS = {
 
     'projects.gamesTitle': 'Juegos',
     'projects.patra.iconAlt': 'Ícono Patras',
-    'projects.patra.details': 'Juego de recoleccion y derrotar enemigos (Solo para escritorio).',
+    'projects.patra.details': 'Juego de recoleccion y derrotar enemigos (Escritorio/Windows).',
 
     'stack.title': 'Stack Informático',
 
