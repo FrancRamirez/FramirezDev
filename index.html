@@ -119,7 +119,7 @@
             <!-- Slide 2: Aplicaciones -->
             <div class="carousel__slide">
               <div class="card card--wide">
-                <h2 class="section__title" data-i18n="projects.appsTitle">Aplicaciones</h2>
+                <h2 class="section__title" data-i18n="projects.appsTitle">Programas y Aplicaciones</h2>
                 <div class="app-grid">
                   <article class="app-card">
                     <h3 class="app-card__name">Galería</h3>
@@ -137,13 +137,19 @@
                       <span data-i18n="projects.download">Descarga</span>
                     </a>
                   </article>
-                  <article class="app-card">
+                  <article class="app-card" data-app-id="multiextractor" data-app-precio="15000">
                     <h3 class="app-card__name" data-i18n="projects.multiextractor.name">Multi-Extractor</h3>
                     <img class="app-card__icon" src="assets/images/Logo_MultiExtractor.png" alt="Ícono de Multi-Extractor" data-i18n-alt="projects.multiextractor.iconAlt">
                     <p class="app-card__details" data-i18n="projects.multiextractor.details">Descompilador de archivos múltiple (Escritorio/Windows).</p>
-                    <a href="/api/pagos/descargar?archivo=MultiExtractor_Freemium.rar" class="app-card__download" data-download>
-                      <span data-i18n="projects.download">Descarga</span>
-                    </a>
+                    <div class="app-card__actions">
+                      <a href="/api/pagos/descargar?archivo=MultiExtractor_Freemium.rar" class="app-card__download" data-download>
+                        <span data-i18n="projects.multiextractor.freemiumBtn">Adquirir versión freemium</span>
+                      </a>
+                      <button type="button" class="app-card__download app-card__buy app-card__buy--dorado" data-buy-app data-app-id="multiextractor">
+                        <span data-i18n="projects.multiextractor.premiumBtn">Adquirir versión premium</span>
+                        <span class="app-card__precio" data-precio-label></span>
+                      </button>
+                    </div>
                   </article>
                   <article class="app-card" data-app-id="videolader" data-app-precio="10000">
                     <h3 class="app-card__name" data-i18n="projects.videolader.name">Videolader</h3>

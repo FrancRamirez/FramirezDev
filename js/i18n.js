@@ -57,7 +57,7 @@ const I18N_TRANSLATIONS = {
     'projects.herreria.details': 'Sitio Web de Herreria en general.',
     'projects.narto.details': 'Sitio Web de Instaladores de cargadores para vehículos eléctricos.',
 
-    'projects.appsTitle': 'Aplicaciones',
+    'projects.appsTitle': 'Programas y Aplicaciones',
     'projects.galeria.iconAlt': 'Ícono de Galeria',
     'projects.galeria.details': 'Galeria de fotos (android).',
     'projects.blocnote.iconAlt': 'Ícono de BlocNote',
@@ -70,6 +70,8 @@ const I18N_TRANSLATIONS = {
     'projects.multiextractor.name': 'Multi-Extractor',
     'projects.multiextractor.iconAlt': 'Ícono de Multi-Extractor',
     'projects.multiextractor.details': 'Descompilador de archivos múltiple (Escritorio/Windows).',
+    'projects.multiextractor.freemiumBtn': 'Adquirir versión freemium',
+    'projects.multiextractor.premiumBtn': 'Adquirir versión premium',
 
     'pago.titulo': 'Completar compra',
     'pago.cerrarAria': 'Cerrar',
@@ -134,7 +136,7 @@ const I18N_TRANSLATIONS = {
     'projects.herreria.details': 'Website for a general metalwork business.',
     'projects.narto.details': 'Website for electric vehicle charger installers.',
 
-    'projects.appsTitle': 'Applications',
+    'projects.appsTitle': 'Programs & Apps',
     'projects.galeria.iconAlt': 'Galeria icon',
     'projects.galeria.details': 'Photo gallery app.',
     'projects.blocnote.iconAlt': 'BlocNote icon',
@@ -147,6 +149,8 @@ const I18N_TRANSLATIONS = {
     'projects.multiextractor.name': 'Multi-Extractor',
     'projects.multiextractor.iconAlt': 'Multi-Extractor icon',
     'projects.multiextractor.details': 'Multi-file archive extractor (Desktop/Windows).',
+    'projects.multiextractor.freemiumBtn': 'Get the freemium version',
+    'projects.multiextractor.premiumBtn': 'Get the premium version',
 
     'pago.titulo': 'Complete purchase',
     'pago.cerrarAria': 'Close',
