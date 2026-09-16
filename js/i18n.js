@@ -70,7 +70,7 @@ const I18N_TRANSLATIONS = {
     'projects.multiextractor.name': 'Multi-Extractor',
     'projects.multiextractor.iconAlt': 'Ícono de Multi-Extractor',
     'projects.multiextractor.details': 'Descompilador de archivos múltiple (Escritorio/Windows).',
-    'projects.multiextractor.freemiumBtn': 'Adquirir versión freemium',
+    'projects.multiextractor.freemiumBtn': 'Adquirir versión gratuita',
     'projects.multiextractor.premiumBtn': 'Adquirir versión premium',
 
     'pago.titulo': 'Completar compra',
