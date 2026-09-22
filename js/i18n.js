@@ -72,6 +72,9 @@ const I18N_TRANSLATIONS = {
     'projects.multiextractor.details': 'Descompilador de archivos múltiple (Escritorio/Windows).',
     'projects.multiextractor.freemiumBtn': 'Adquirir versión gratuita',
     'projects.multiextractor.premiumBtn': 'Adquirir versión premium',
+    'projects.omnimedia.name': 'OmniMedia',
+    'projects.omnimedia.iconAlt': 'Ícono de OmniMedia',
+    'projects.omnimedia.details': 'Reproductor de música y video en una sola app (android).',
 
     'pago.titulo': 'Completar compra',
     'pago.cerrarAria': 'Cerrar',
@@ -151,6 +154,9 @@ const I18N_TRANSLATIONS = {
     'projects.multiextractor.details': 'Multi-file archive extractor (Desktop/Windows).',
     'projects.multiextractor.freemiumBtn': 'Get the freemium version',
     'projects.multiextractor.premiumBtn': 'Get the premium version',
+    'projects.omnimedia.name': 'OmniMedia',
+    'projects.omnimedia.iconAlt': 'OmniMedia icon',
+    'projects.omnimedia.details': 'Music and video player in a single app.',
 
     'pago.titulo': 'Complete purchase',
     'pago.cerrarAria': 'Close',
