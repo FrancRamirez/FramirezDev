@@ -76,7 +76,7 @@ const I18N_TRANSLATIONS = {
     'projects.omnimedia.iconAlt': 'Ícono de OmniMedia',
     'projects.omnimedia.details': 'Reproductor de música y video en una sola app (android).',
     'projects.nicemagent.iconAlt': 'Ícono de Nicemagent',
-    'projects.nicemagent.details': 'Gestor de cache y operativo del rendimiento del dispositivo (android).',
+    'projects.nicemagent.details': 'Gestor de caché y operativo del rendimiento del dispositivo (android).',
 
     'pago.titulo': 'Completar compra',
     'pago.cerrarAria': 'Cerrar',
