@@ -75,6 +75,8 @@ const I18N_TRANSLATIONS = {
     'projects.omnimedia.name': 'OmniMedia',
     'projects.omnimedia.iconAlt': 'Ícono de OmniMedia',
     'projects.omnimedia.details': 'Reproductor de música y video en una sola app (android).',
+    'projects.nicemagent.iconAlt': 'Ícono de Nicemagent',
+    'projects.nicemagent.details': 'Gestor de cache y operativo del rendimiento del dispositivo (android).',
 
     'pago.titulo': 'Completar compra',
     'pago.cerrarAria': 'Cerrar',
@@ -157,6 +159,9 @@ const I18N_TRANSLATIONS = {
     'projects.omnimedia.name': 'OmniMedia',
     'projects.omnimedia.iconAlt': 'OmniMedia icon',
     'projects.omnimedia.details': 'Music and video player in a single app.',
+    'projects.nicemagent.name': 'Nicemagent',
+    'projects.nicemagent.iconAlt': 'Nicemagent icon',
+    'projects.nicemagent.details': 'Cache and Device Performance Manager (Android).',
 
     'pago.titulo': 'Complete purchase',
     'pago.cerrarAria': 'Close',

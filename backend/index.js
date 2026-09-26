@@ -80,7 +80,7 @@ app.post('/api/send-email', async (req, res) => {
       to: email,
       subject: '✓ Hemos recibido tu mensaje',
       html: `
-        <h2>¡Gracias por contactarnos, ${nombre}!</h2>
+        <h2>¡Gracias por contactarme, ${nombre}!</h2>
         <p>Recibimos tu mensaje correctamente.</p>
         <p><strong>Tu mensaje:</strong></p>
         <p>${mensaje.replace(/\n/g, '<br>')}</p>
