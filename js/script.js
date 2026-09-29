@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initStarryBackground();
   toggleMobileMenu();
   closeMenuOnLinkClick();
-  initCarousel('proyectos', { autoplayMs: 10000 });
+  initCarousel('proyectos', { autoplayMs: 10000, mobileAutoplayMs: 15000 });
+  initProjectRows();
   handleContactForm();
   setFooterYear();
   initAccountLink();
@@ -192,6 +193,9 @@ function initStarryBackground() {
 // Gap (px) entre slides mientras desliza; debe coincidir con el CSS
 const SLIDE_GAP_PX = 100;
 
+// Breakpoint móvil (el mismo que usa el CSS)
+const MOBILE_QUERY = '(max-width: 720px)';
+
 // Carrusel genérico (flechas, dots, autoplay)
 function initCarousel(name, options = {}) {
   const track = document.getElementById(`${name}Track`);
@@ -207,6 +211,9 @@ function initCarousel(name, options = {}) {
 
   let currentIndex = 0;
   let autoplayTimer = null;
+  let autoplayEnabled = true; // lo cambia el botón "Desactivar Carrusel" (solo móvil)
+  const toggleBtn = document.getElementById(`${name}Toggle`);
+  const mobileQuery = window.matchMedia(MOBILE_QUERY);
 
   if (slides.length === 1) {
     if (dotsContainer) dotsContainer.style.display = 'none';
@@ -241,6 +248,10 @@ function initCarousel(name, options = {}) {
 
     slides.forEach((slide, i) => {
       slide.classList.toggle('is-active', i === currentIndex);
+      // Al salir de una sección, su fila de proyectos vuelve al primero
+      if (i !== currentIndex) {
+        slide.querySelector('[data-row-scroller]')?.scrollTo({ left: 0 });
+      }
     });
 
     dots.forEach((dot, i) => {
@@ -258,18 +269,95 @@ function initCarousel(name, options = {}) {
     restartAutoplay();
   });
 
+  // 15s en móvil, 10s en escritorio
+  function getAutoplayMs() {
+    return mobileQuery.matches && options.mobileAutoplayMs
+      ? options.mobileAutoplayMs
+      : options.autoplayMs;
+  }
+
   function startAutoplay() {
-    if (!options.autoplayMs) return;
-    autoplayTimer = setInterval(() => goToSlide(currentIndex + 1), options.autoplayMs);
+    const ms = getAutoplayMs();
+    if (!ms || !autoplayEnabled) return;
+    autoplayTimer = setInterval(() => goToSlide(currentIndex + 1), ms);
   }
 
   function restartAutoplay() {
-    if (!options.autoplayMs) return;
     clearInterval(autoplayTimer);
     startAutoplay();
   }
 
+  // Botón "Desactivar Carrusel" / "Activar Carrusel"
+  function updateToggleLabel() {
+    if (!toggleBtn) return;
+    const key = autoplayEnabled ? 'carousel.disable' : 'carousel.enable';
+    toggleBtn.setAttribute('data-i18n', key); // así el cambio de idioma lo mantiene
+    toggleBtn.textContent = window.I18N ? window.I18N.t(key) : (autoplayEnabled ? 'Desactivar Carrusel' : 'Activar Carrusel');
+    toggleBtn.setAttribute('aria-pressed', String(!autoplayEnabled));
+  }
+
+  toggleBtn?.addEventListener('click', () => {
+    autoplayEnabled = !autoplayEnabled;
+    restartAutoplay();
+    updateToggleLabel();
+  });
+
+  // Si se rota el celular o cambia el ancho, se recalcula el tiempo (10s <-> 15s)
+  mobileQuery.addEventListener('change', restartAutoplay);
+
   startAutoplay();
+}
+
+
+// Filas horizontales de proyectos (solo se ven así en móvil, ver CSS)
+// Flechas internas = pasan de proyecto en proyecto dentro de la misma sección.
+function initProjectRows() {
+  document.querySelectorAll('[data-row]').forEach((row) => {
+    const scroller = row.querySelector('[data-row-scroller]');
+    const prev = row.querySelector('.row-arrow--prev');
+    const next = row.querySelector('.row-arrow--next');
+    const counter = row.querySelector('.row-counter');
+    if (!scroller) return;
+
+    const total = scroller.children.length;
+
+    // Con un solo proyecto no hacen falta flechas ni contador
+    if (total <= 1) {
+      row.classList.add('row-wrap--single');
+      return;
+    }
+
+    // Índice del proyecto visible según cuánto se desplazó la fila
+    function currentIndex() {
+      return Math.round(scroller.scrollLeft / scroller.clientWidth);
+    }
+
+    function update() {
+      const index = Math.min(Math.max(currentIndex(), 0), total - 1);
+      if (counter) counter.textContent = `${index + 1} / ${total}`;
+      if (prev) prev.disabled = index === 0;
+      if (next) next.disabled = index === total - 1;
+    }
+
+    function goTo(index) {
+      const target = Math.min(Math.max(index, 0), total - 1);
+      scroller.scrollTo({ left: target * scroller.clientWidth, behavior: 'smooth' });
+    }
+
+    prev?.addEventListener('click', () => goTo(currentIndex() - 1));
+    next?.addEventListener('click', () => goTo(currentIndex() + 1));
+
+    // También se actualiza cuando el usuario desliza con el dedo
+    let ticking = false;
+    scroller.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { update(); ticking = false; });
+    }, { passive: true });
+
+    window.addEventListener('resize', update);
+    update();
+  });
 }
 
 

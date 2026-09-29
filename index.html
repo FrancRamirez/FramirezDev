@@ -81,10 +81,10 @@
     <!-- Sección 3: Proyectos (carrusel Páginas Web + Aplicaciones) -->
     <section id="proyectos" class="section section--wide">
 
-      <div class="carousel--main" data-carousel="proyectos" data-autoplay="10000">
+      <div class="carousel--main" data-carousel="proyectos" data-autoplay="10000" data-autoplay-mobile="15000">
 
         <!-- Flechas prev/next -->
-       <button type="button" class="carousel__arrow carousel__arrow--prev" aria-label="Slide anterior" data-i18n-aria-label="carousel.prevAria">&#10094;</button>
+       <button type="button" class="carousel__arrow carousel__arrow--prev" aria-label="Sección anterior" data-i18n-aria-label="carousel.prevAria">&#10094;</button>
 
         <!-- Ventana que recorta y difumina los slides -->
         <div class="carousel carousel__viewport">
@@ -94,7 +94,9 @@
             <div class="carousel__slide">
               <div class="card card--wide">
                 <h2 class="section__title" data-i18n="projects.webTitle">Páginas Web</h2>
-                <div class="project-grid">
+                <div class="row-wrap" data-row>
+                  <button type="button" class="row-arrow row-arrow--prev" aria-label="Proyecto anterior" data-i18n-aria-label="carousel.rowPrevAria">&#8249;</button>
+                  <div class="project-grid" data-row-scroller>
 
                   <article class="project-card">
                     <h3 class="project-card__name">Herrería Eduardo</h3>
@@ -113,6 +115,9 @@
                   </article>
 
                 </div>
+                  <button type="button" class="row-arrow row-arrow--next" aria-label="Proyecto siguiente" data-i18n-aria-label="carousel.rowNextAria">&#8250;</button>
+                  <div class="row-counter" aria-live="polite"></div>
+                </div>
               </div>
             </div>
 
@@ -120,7 +125,9 @@
             <div class="carousel__slide">
               <div class="card card--wide">
                 <h2 class="section__title" data-i18n="projects.appsTitle">Programas y Aplicaciones</h2>
-                <div class="app-grid">
+                <div class="row-wrap" data-row>
+                  <button type="button" class="row-arrow row-arrow--prev" aria-label="Proyecto anterior" data-i18n-aria-label="carousel.rowPrevAria">&#8249;</button>
+                  <div class="app-grid" data-row-scroller>
                   <article class="app-card">
                     <h3 class="app-card__name">Galería</h3>
                     <img class="app-card__icon" src="assets/images/Galeria.png" alt="Ícono de Galeria" data-i18n-alt="projects.galeria.iconAlt">
@@ -179,6 +186,9 @@
                     </button>
                   </article>
                 </div>
+                  <button type="button" class="row-arrow row-arrow--next" aria-label="Proyecto siguiente" data-i18n-aria-label="carousel.rowNextAria">&#8250;</button>
+                  <div class="row-counter" aria-live="polite"></div>
+                </div>
               </div>
             </div>
 
@@ -186,7 +196,9 @@
             <div class="carousel__slide">
               <div class="card card--wide">
                 <h2 class="section__title" data-i18n="projects.gamesTitle">Juegos</h2>
-                <div class="app-grid">
+                <div class="row-wrap" data-row>
+                  <button type="button" class="row-arrow row-arrow--prev" aria-label="Proyecto anterior" data-i18n-aria-label="carousel.rowPrevAria">&#8249;</button>
+                  <div class="app-grid" data-row-scroller>
                   <article class="app-card">
                     <h3 class="app-card__name">Patra</h3>
                     <img class="app-card__icon" src="assets/images/Patra.png" alt="Ícono Patras" data-i18n-alt="projects.patra.iconAlt">
@@ -194,7 +206,11 @@
                     <button type="button" class="app-card__download app-card__buy app-card__buy--dorado" data-buy-app data-app-id="patra">
                       <span data-i18n="projects.buy">Comprar</span>
                       <span class="app-card__precio" data-precio-label></span>
+                    </button>
                   </article>
+                </div>
+                  <button type="button" class="row-arrow row-arrow--next" aria-label="Proyecto siguiente" data-i18n-aria-label="carousel.rowNextAria">&#8250;</button>
+                  <div class="row-counter" aria-live="polite"></div>
                 </div>
               </div>
             </div>
@@ -202,11 +218,14 @@
           </div>
         </div>
 
-        <button type="button" class="carousel__arrow carousel__arrow--next" aria-label="Slide siguiente" data-i18n-aria-label="carousel.nextAria">&#10095;</button>
+        <button type="button" class="carousel__arrow carousel__arrow--next" aria-label="Sección siguiente" data-i18n-aria-label="carousel.nextAria">&#10095;</button>
 
         <!-- Los puntos se generan solos en JS según cuántos
              .carousel__slide haya (acá van a ser 2: uno por sección) -->
         <div class="carousel__dots" id="proyectosDots"></div>
+
+        <!-- Solo móvil: detiene/reanuda el avance automático entre secciones -->
+        <button type="button" class="carousel__toggle" id="proyectosToggle" data-i18n="carousel.disable">Desactivar Carrusel</button>
       </div>
     </section>
 

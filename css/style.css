@@ -926,6 +926,15 @@ h1, h2, h3 {
   opacity: 0.75;
 }
 
+
+/* 8b. Filas de proyectos: en escritorio todo esto queda oculto */
+.row-wrap { position: relative; }
+.row-arrow,
+.row-counter,
+.carousel__toggle {
+  display: none;
+}
+
 /* 13. Responsive */
 @media (max-width: 900px) {
   .hero,
@@ -966,6 +975,129 @@ h1, h2, h3 {
   }
   .hero__media {
     display: none;
+  }
+}
+
+/* 13b. Carrusel de Proyectos en móvil (max-width 720px)
+   - Cada sección muestra sus proyectos en una fila horizontal, de a 1 por vez
+   - Flechas grandes arriba (junto al título) = entre secciones
+   - Flechas chicas a los costados de la fila = entre proyectos de la misma sección */
+@media (max-width: 720px) {
+
+  /* Menos padding para que el proyecto tenga espacio */
+  .carousel__slide .card {
+    padding: 1.5rem 1rem;
+  }
+  .carousel__slide .section__title {
+    padding: 0 2.75rem; /* deja lugar a las flechas de sección */
+    margin-bottom: 1rem;
+  }
+
+  /* Borde difuminado más angosto (48px comía demasiado en pantallas chicas) */
+  .carousel__viewport {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
+  }
+
+  /* Flechas entre SECCIONES: arriba, a la altura del título */
+  .carousel__arrow {
+    top: 1.5rem;
+    transform: none;
+    width: 38px;
+    height: 38px;
+    border-color: var(--accent-green);
+    background: rgba(16, 28, 56, 0.85);
+  }
+  .carousel__arrow--prev { left: 0.4rem; }
+  .carousel__arrow--next { right: 0.4rem; }
+
+  /* Fila horizontal: scroll con snap, se puede deslizar con el dedo */
+  .row-wrap {
+    padding: 0 2.25rem; /* espacio lateral para las flechas de proyecto */
+  }
+  .row-wrap--single {
+    padding: 0;
+  }
+  .project-grid,
+  .app-grid {
+    display: flex;
+    grid-template-columns: none;
+    gap: 0;
+    margin-top: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .project-grid::-webkit-scrollbar,
+  .app-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .project-card,
+  .app-card {
+    flex: 0 0 100%;
+    min-width: 0;
+    scroll-snap-align: start;
+    scroll-snap-stop: always; /* no saltea proyectos al deslizar rápido */
+    box-sizing: border-box;
+    padding: 0 0.25rem;
+  }
+
+  /* Flechas entre PROYECTOS: chicas, a los costados de la fila */
+  .row-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    z-index: 4;
+    width: 30px;
+    height: 30px;
+    padding: 0 0 2px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: rgba(16, 28, 56, 0.6);
+    color: var(--text);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .row-arrow--prev { left: 0; }
+  .row-arrow--next { right: 0; }
+  .row-arrow:disabled {
+    opacity: 0.25;
+    cursor: default;
+  }
+  .row-wrap--single .row-arrow,
+  .row-wrap--single .row-counter {
+    display: none;
+  }
+
+  /* "2 / 5" debajo de la fila */
+  .row-counter {
+    display: block;
+    margin-top: 1rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  /* Botón "Desactivar Carrusel" */
+  .carousel__toggle {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.5rem 1.1rem;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .carousel__toggle[aria-pressed="true"] {
+    border-color: var(--accent-green);
   }
 }
 

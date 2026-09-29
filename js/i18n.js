@@ -49,8 +49,12 @@ const I18N_TRANSLATIONS = {
     'about.text1': 'Mi nombre es Francisco, soy desarrollador Full-Stack y freelancer. Técnico Universitario Programador graduado de la Universidad Tecnológica Nacional.',
     'about.text2': 'Me dedico a ofrecer soluciones y servicios, sean para desarrollar páginas web, software o aplicaciones a los usuarios que lo necesitan.',
 
-    'carousel.prevAria': 'Slide anterior',
-    'carousel.nextAria': 'Slide siguiente',
+    'carousel.prevAria': 'Sección anterior',
+    'carousel.nextAria': 'Sección siguiente',
+    'carousel.rowPrevAria': 'Proyecto anterior',
+    'carousel.rowNextAria': 'Proyecto siguiente',
+    'carousel.disable': 'Desactivar Carrusel',
+    'carousel.enable': 'Activar Carrusel',
     'carousel.dotAria': 'Ir al slide {n}',
 
     'projects.webTitle': 'Páginas Web',
@@ -133,8 +137,12 @@ const I18N_TRANSLATIONS = {
     'about.text1': "My name is Francisco, I'm a Full-Stack developer and freelancer. Programming graduate from National Technological University (UTN).",
     'about.text2': 'I offer solutions and services, whether developing websites, software, or applications for the users who need them.',
 
-    'carousel.prevAria': 'Previous slide',
-    'carousel.nextAria': 'Next slide',
+    'carousel.prevAria': 'Previous section',
+    'carousel.nextAria': 'Next section',
+    'carousel.rowPrevAria': 'Previous project',
+    'carousel.rowNextAria': 'Next project',
+    'carousel.disable': 'Disable Carousel',
+    'carousel.enable': 'Enable Carousel',
     'carousel.dotAria': 'Go to slide {n}',
 
     'projects.webTitle': 'Websites',
