@@ -979,9 +979,9 @@ h1, h2, h3 {
 }
 
 /* 13b. Carrusel de Proyectos en móvil (max-width 720px)
-   - Cada sección muestra sus proyectos en una fila horizontal, de a 1 por vez
+   - Cada sección muestra sus proyectos en páginas horizontales, de a 2 por página
    - Flechas grandes arriba (junto al título) = entre secciones
-   - Flechas chicas a los costados de la fila = entre proyectos de la misma sección */
+   - Flechas pronunciadas a los costados = entre páginas de proyectos de la misma sección */
 @media (max-width: 720px) {
 
   /* Menos padding para que el proyecto tenga espacio */
@@ -1013,16 +1013,21 @@ h1, h2, h3 {
 
   /* Fila horizontal: scroll con snap, se puede deslizar con el dedo */
   .row-wrap {
-    padding: 0 2.25rem; /* espacio lateral para las flechas de proyecto */
+    padding: 0 3.1rem; /* espacio lateral para las flechas de proyecto */
   }
   .row-wrap--single {
     padding: 0;
   }
+  /* Páginas de 2 proyectos: grilla de 2 filas que crece en columnas
+     (cada columna = 1 página, del ancho de la fila) */
   .project-grid,
   .app-grid {
-    display: flex;
+    display: grid;
     grid-template-columns: none;
-    gap: 0;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    gap: 1.5rem 0;
     margin-top: 0;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -1036,38 +1041,48 @@ h1, h2, h3 {
   }
   .project-card,
   .app-card {
-    flex: 0 0 100%;
     min-width: 0;
-    scroll-snap-align: start;
-    scroll-snap-stop: always; /* no saltea proyectos al deslizar rápido */
     box-sizing: border-box;
     padding: 0 0.25rem;
   }
+  /* Solo el 1.º de cada par marca el punto de snap (inicio de página) */
+  .project-card:nth-child(odd),
+  .app-card:nth-child(odd) {
+    scroll-snap-align: start;
+    scroll-snap-stop: always; /* no saltea páginas al deslizar rápido */
+  }
 
-  /* Flechas entre PROYECTOS: chicas, a los costados de la fila */
+  /* Flechas entre PÁGINAS de proyectos: grandes y bien visibles */
   .row-arrow {
     display: flex;
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 40%;
+    top: 50%;
     transform: translateY(-50%);
     z-index: 4;
-    width: 30px;
-    height: 30px;
-    padding: 0 0 2px;
+    width: 46px;
+    height: 46px;
+    padding: 0 0 4px;
     border-radius: 50%;
-    border: 1px solid var(--border);
-    background: rgba(16, 28, 56, 0.6);
-    color: var(--text);
-    font-size: 1.4rem;
+    border: 2px solid var(--accent-green);
+    background: rgba(16, 28, 56, 0.95);
+    color: var(--accent-green);
+    font-size: 2.4rem;
+    font-weight: 700;
     line-height: 1;
     cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .row-arrow:active:not(:disabled) {
+    background: var(--accent-green);
+    color: #0b1220;
   }
   .row-arrow--prev { left: 0; }
   .row-arrow--next { right: 0; }
   .row-arrow:disabled {
-    opacity: 0.25;
+    opacity: 0.3;
     cursor: default;
   }
   .row-wrap--single .row-arrow,

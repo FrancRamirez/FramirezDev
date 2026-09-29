@@ -310,7 +310,7 @@ function initCarousel(name, options = {}) {
 
 
 // Filas horizontales de proyectos (solo se ven así en móvil, ver CSS)
-// Flechas internas = pasan de proyecto en proyecto dentro de la misma sección.
+// Flechas internas = pasan de página (2 proyectos) en página dentro de la misma sección.
 function initProjectRows() {
   document.querySelectorAll('[data-row]').forEach((row) => {
     const scroller = row.querySelector('[data-row-scroller]');
@@ -319,15 +319,17 @@ function initProjectRows() {
     const counter = row.querySelector('.row-counter');
     if (!scroller) return;
 
-    const total = scroller.children.length;
+    // En móvil se muestran hasta 2 proyectos por página (ver CSS)
+    const PER_PAGE = 2;
+    const total = Math.ceil(scroller.children.length / PER_PAGE);
 
-    // Con un solo proyecto no hacen falta flechas ni contador
+    // Con una sola página no hacen falta flechas ni contador
     if (total <= 1) {
       row.classList.add('row-wrap--single');
       return;
     }
 
-    // Índice del proyecto visible según cuánto se desplazó la fila
+    // Índice de la página visible según cuánto se desplazó la fila
     function currentIndex() {
       return Math.round(scroller.scrollLeft / scroller.clientWidth);
     }
