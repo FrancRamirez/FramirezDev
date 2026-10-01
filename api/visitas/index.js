@@ -15,6 +15,11 @@ import {
   obtenerTotalPeriodo,
   obtenerTotalGeneral,
 } from '../../lib/visits.js';
+import {
+  sanitizarPayload,
+  registrarVitals,
+  obtenerResumenVitals,
+} from '../../lib/vitals.js';
 
 const ALLOWED_ORIGINS = [
   'https://framirezdev.com.ar',
@@ -101,6 +106,52 @@ async function handleTotal(req, res) {
   }
 }
 
+// Recibe el beacon de js/vitals.js. Responde 204 siempre que pueda: el
+// navegador ignora la respuesta de sendBeacon, así que no vale la pena
+// gastar bytes. Solo se aceptan orígenes propios para evitar basura.
+async function handleVitals(req, res) {
+  const origin = req.headers.origin;
+  if (origin && !ALLOWED_ORIGINS.includes(origin)) {
+    return res.status(403).end();
+  }
+
+  const fila = sanitizarPayload(req.body);
+  if (!fila) return res.status(400).end();
+
+  try {
+    await registrarVitals(fila);
+    res.status(204).end();
+  } catch (error) {
+    console.error('Error en /api/visitas?action=vitals:', error);
+    res.status(500).end();
+  }
+}
+
+// Resumen p75 de los últimos N días. Solo Admin (se muestra en el dashboard).
+async function handleVitalsResumen(req, res) {
+  const token = readSessionToken(req);
+  const payload = token ? verifySessionToken(token) : null;
+  if (!payload || payload.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'No autorizado.' });
+  }
+
+  try {
+    const dias = Math.min(Math.max(parseInt(req.query?.dias, 10) || 28, 1), 90);
+    const resumen = await obtenerResumenVitals({
+      dias,
+      dispositivo: req.query?.dispositivo,
+    });
+    res.status(200).json({ success: true, resumen });
+  } catch (error) {
+    console.error('Error en /api/visitas?action=vitals-resumen:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Hubo un error al obtener las métricas.',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+    });
+  }
+}
+
 export default async (req, res) => {
   const origin = req.headers.origin;
   if (origin && ALLOWED_ORIGINS.includes(origin)) {
@@ -135,6 +186,18 @@ export default async (req, res) => {
         return res.status(405).json({ success: false, message: 'Method Not Allowed' });
       }
       return handleTotal(req, res);
+
+    case 'vitals':
+      if (req.method !== 'POST') {
+        return res.status(405).json({ success: false, message: 'Method Not Allowed' });
+      }
+      return handleVitals(req, res);
+
+    case 'vitals-resumen':
+      if (req.method !== 'GET') {
+        return res.status(405).json({ success: false, message: 'Method Not Allowed' });
+      }
+      return handleVitalsResumen(req, res);
 
     default:
       return res.status(400).json({ success: false, message: 'Acción no reconocida.' });

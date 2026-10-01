@@ -167,3 +167,13 @@
     align-items: flex-start;
   }
 }
+
+/* Core Web Vitals */
+.vitals-nota,
+.vitals-muestras {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.vitals-bueno { color: #4ade80; }
+.vitals-mejorable { color: #fbbf24; }
+.vitals-pobre { color: #f87171; }

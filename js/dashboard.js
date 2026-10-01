@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (user.role === 'admin') {
     adminSection.style.display = 'grid';
     cargarVisitas();
+    cargarVitals();
   }
 
   logoutBtn.addEventListener('click', async () => {
@@ -87,4 +88,36 @@ async function cargarVisitas(periodo) {
         )
         .join('')
     : '<tr><td colspan="3">Sin visitas registradas.</td></tr>';
+}
+
+// Core Web Vitals (solo Admin): p75 de los últimos 28 días.
+async function cargarVitals() {
+  const cont = document.getElementById('vitalsResumen');
+  if (!cont) return;
+
+  const res = await fetch('/api/visitas?action=vitals-resumen', { credentials: 'include' });
+  if (!res.ok) return;
+  const data = await res.json();
+  if (!data.success) return;
+
+  const { muestras, metricas } = data.resumen;
+  document.getElementById('vitalsMuestras').textContent = `${muestras} visitas medidas`;
+
+  const formato = {
+    lcp: (v) => (v / 1000).toFixed(2) + ' s',
+    inp: (v) => Math.round(v) + ' ms',
+    cls: (v) => v.toFixed(3),
+  };
+
+  cont.innerHTML = ['lcp', 'inp', 'cls']
+    .map((k) => {
+      const m = metricas[k];
+      const valor = m.p75 === null ? '—' : formato[k](m.p75);
+      return `
+        <div class="visitas-resumen__item">
+          <span class="visitas-resumen__valor vitals-${m.estado || 'sin-datos'}">${valor}</span>
+          <span class="visitas-resumen__label">${k.toUpperCase()}</span>
+        </div>`;
+    })
+    .join('');
 }
