@@ -123,7 +123,7 @@ app.post('/api/send-email', async (req, res) => {
 // dashboard.html, css/, js/, assets/) desde el mismo origen que la API.
 // Esto es solo para desarrollo local: en Vercel el sitio se sirve por
 // separado y esta línea no aplica (VERCEL_ENV !== undefined ahí).
-app.use(express.static(PROJECT_ROOT));
+app.use(express.static(path.join(PROJECT_ROOT, 'public')));
 
 // Nota: con express.static ya activo, "/" ahora sirve index.html
 // directo (como en producción). Esta ruta queda como referencia rápida

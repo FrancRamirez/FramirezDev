@@ -20,6 +20,7 @@ import {
   registrarVitals,
   obtenerResumenVitals,
 } from '../../lib/vitals.js';
+import { limitar } from '../../lib/rateLimit.js';
 
 const ALLOWED_ORIGINS = [
   'https://framirezdev.com.ar',
@@ -60,29 +61,54 @@ async function handleDetalle(req, res) {
 // sesión de navegador) la decide el cliente antes de llamar acá —
 // ver js/visitas.js, que solo pega este POST una vez por sessionStorage
 // (se resetea al cerrar la pestaña/ventana).
+//
+// Está dividido en dos pasos independientes para que un fallo no tire
+// abajo todo el contador:
+//   1) insertar la visita (si falla, solo se loguea y se avisa con
+//      `registrada: false`; el total existente igual se devuelve)
+//   2) leer los totales (si esto falla, recién ahí se responde 500)
+// El flag `registrada` le dice al cliente si la visita quedó guardada de
+// verdad, para que no la cuente dos veces al reintentar ni dé por contada
+// una visita que no se guardó.
 async function handleRegistrar(req, res) {
-  try {
-    const token = readSessionToken(req);
-    const payload = token ? verifySessionToken(token) : null;
-    const username = payload?.username || null;
+  const token = readSessionToken(req);
+  const payload = token ? verifySessionToken(token) : null;
+  const username = payload?.username || null;
 
-    const { visitorId } = await registrarVisita(req, username);
+  let registrada = false;
 
-    // Solo hace falta la cookie de visitante anónimo si no hay sesión:
-    // un usuario logueado ya se identifica con su usuario, no con la cookie.
-    if (!username) {
-      res.setHeader('Set-Cookie', buildVisitorCookie(visitorId));
+  // Tope por IP: un visitante real dispara 1 registro por sesión; más de 10
+  // en 10 minutos desde la misma IP es casi seguro un script. Si se pasa
+  // del límite no se guarda la visita (no es un error: se devuelve el total
+  // igual, con `registrada: false`).
+  const limite = limitar(req, 'visita', 10, 10 * 60 * 1000);
+
+  if (limite.permitido) {
+    try {
+      const { visitorId } = await registrarVisita(req, username);
+      registrada = true;
+
+      // Solo hace falta la cookie de visitante anónimo si no hay sesión:
+      // un usuario logueado ya se identifica con su usuario, no con la cookie.
+      if (!username) {
+        res.setHeader('Set-Cookie', buildVisitorCookie(visitorId));
+      }
+    } catch (error) {
+      console.error('Error en /api/visitas?action=registrar (al guardar la visita):', error);
     }
+  }
 
+  try {
     const [total, totalGeneral] = await Promise.all([
       obtenerTotalPeriodo(),
       obtenerTotalGeneral(),
     ]);
-    res.status(200).json({ success: true, total, totalGeneral });
+    res.status(200).json({ success: true, registrada, total, totalGeneral });
   } catch (error) {
-    console.error('Error en /api/visitas?action=registrar:', error);
+    console.error('Error en /api/visitas?action=registrar (al leer los totales):', error);
     res.status(500).json({
       success: false,
+      registrada,
       message: 'Hubo un error al registrar la visita.',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
@@ -113,6 +139,12 @@ async function handleVitals(req, res) {
   const origin = req.headers.origin;
   if (origin && !ALLOWED_ORIGINS.includes(origin)) {
     return res.status(403).end();
+  }
+
+  // Tope por IP: cada página vista manda 1 beacon, así que 30 cada 10
+  // minutos sobra para un visitante real.
+  if (!limitar(req, 'vitals', 30, 10 * 60 * 1000).permitido) {
+    return res.status(429).end();
   }
 
   const fila = sanitizarPayload(req.body);

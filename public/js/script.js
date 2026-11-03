@@ -1,0 +1,457 @@
+// script.js
+
+document.addEventListener('DOMContentLoaded', () => {
+  initStarryBackground();
+  toggleMobileMenu();
+  closeMenuOnLinkClick();
+  initCarousel('proyectos', { autoplayMs: 10000, mobileAutoplayMs: 15000 });
+  initProjectRows();
+  handleContactForm();
+  setFooterYear();
+  initAccountLink();
+});
+
+
+// Si hay sesión activa, el link "Ingresar" del navbar pasa a ser "Dashboard"
+function initAccountLink() {
+  const link = document.getElementById('accountLink');
+  if (!link || !window.AuthAPI) return;
+
+  window.AuthAPI.me().then((user) => {
+    if (user) {
+      link.textContent = 'Dashboard';
+      link.href = 'dashboard.html';
+    }
+  });
+}
+
+
+// Menú hamburguesa (mobile)
+function toggleMobileMenu() {
+  const toggleBtn = document.getElementById('navToggle');
+  const menu = document.getElementById('navMenu');
+
+  if (!toggleBtn || !menu) return;
+
+  toggleBtn.addEventListener('click', () => {
+    const isOpen = menu.classList.toggle('is-open');
+    toggleBtn.classList.toggle('is-open', isOpen);
+    toggleBtn.setAttribute('aria-expanded', String(isOpen));
+  });
+}
+
+
+// Cierra el menú mobile al tocar un link
+function closeMenuOnLinkClick() {
+  const links = document.querySelectorAll('.nav-link');
+  const menu = document.getElementById('navMenu');
+  const toggleBtn = document.getElementById('navToggle');
+
+  links.forEach((link) => {
+    link.addEventListener('click', () => {
+      menu?.classList.remove('is-open');
+      toggleBtn?.classList.remove('is-open');
+      toggleBtn?.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
+
+
+// Fondo estrellado dinámico con estrellas procedurales y meteoros
+function initStarryBackground() {
+  const canvas = document.getElementById('starsCanvas');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // Seed para generación procedural consistente
+  const seed = 12345;
+  const random = (() => {
+    let value = seed;
+    return () => {
+      value = (value * 9301 + 49297) % 233280;
+      return value / 233280;
+    };
+  })();
+
+  // Generar estrellas proceduralmente
+  const stars = [];
+  const starCount = Math.floor((canvas.width * canvas.height) / 5000);
+  
+  for (let i = 0; i < starCount; i++) {
+    stars.push({
+      x: random() * canvas.width,
+      y: random() * canvas.height,
+      radius: random() * 1.5,
+      opacity: random() * 0.5 + 0.3,
+      twinkleSpeed: random() * 0.03 + 0.01,
+      phase: random() * Math.PI * 2,
+    });
+  }
+
+  // Meteoros (estrellas fugaces)
+  const meteors = [];
+  const maxMeteors = 3;
+
+  function createMeteor() {
+    if (meteors.length >= maxMeteors) return;
+    
+    meteors.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * (canvas.height * 0.6),
+      velocityX: Math.random() * 4 + 2,
+      velocityY: Math.random() * 2 + 1,
+      length: Math.random() * 60 + 40,
+      opacity: 1,
+      trail: [],
+    });
+  }
+
+  function drawStars() {
+    // Fondo oscuro
+    ctx.fillStyle = 'rgba(10, 18, 38, 0.95)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Dibujar estrellas con parpadeo
+    stars.forEach((star) => {
+      star.phase += star.twinkleSpeed;
+      const brightness = Math.sin(star.phase) * 0.35 + 0.65;
+      
+      ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity * brightness})`;
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
+  function updateMeteors() {
+    meteors.forEach((meteor, index) => {
+      meteor.x += meteor.velocityX;
+      meteor.y += meteor.velocityY;
+      meteor.opacity -= 0.01;
+
+      // Trail del meteoro
+      if (!meteor.trail) meteor.trail = [];
+      meteor.trail.push({ x: meteor.x, y: meteor.y, opacity: meteor.opacity });
+      
+      if (meteor.trail.length > 10) {
+        meteor.trail.shift();
+      }
+
+      // Dibujar trail (estela)
+      if (meteor.trail.length > 1) {
+        for (let i = 0; i < meteor.trail.length - 1; i++) {
+          const current = meteor.trail[i];
+          const next = meteor.trail[i + 1];
+          
+          ctx.strokeStyle = `rgba(255, 200, 100, ${current.opacity * 0.8})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(current.x, current.y);
+          ctx.lineTo(next.x, next.y);
+          ctx.stroke();
+        }
+      }
+
+      // Dibujar núcleo del meteoro
+      ctx.fillStyle = `rgba(255, 255, 255, ${meteor.opacity})`;
+      ctx.beginPath();
+      ctx.arc(meteor.x, meteor.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Remover meteoro si está fuera de pantalla
+      if (meteor.x > canvas.width || meteor.y > canvas.height || meteor.opacity <= 0) {
+        meteors.splice(index, 1);
+      }
+    });
+  }
+
+  function animate() {
+    drawStars();
+    updateMeteors();
+
+    // Crear nuevo meteoro aleatoriamente
+    if (Math.random() < 0.01) {
+      createMeteor();
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // Redibujar al redimensionar
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  animate();
+}
+
+
+// Gap (px) entre slides mientras desliza; debe coincidir con el CSS
+const SLIDE_GAP_PX = 100;
+
+// Breakpoint móvil (el mismo que usa el CSS)
+const MOBILE_QUERY = '(max-width: 720px)';
+
+// Carrusel genérico (flechas, dots, autoplay)
+function initCarousel(name, options = {}) {
+  const track = document.getElementById(`${name}Track`);
+  if (!track) return;
+
+  const slides = track.querySelectorAll('.carousel__slide');
+  if (slides.length === 0) return;
+
+  const carouselEl = track.closest('[data-carousel]');
+  const dotsContainer = document.getElementById(`${name}Dots`);
+  const prevBtn = carouselEl?.querySelector('.carousel__arrow--prev');
+  const nextBtn = carouselEl?.querySelector('.carousel__arrow--next');
+
+  let currentIndex = 0;
+  let autoplayTimer = null;
+  let autoplayEnabled = true; // lo cambia el botón "Desactivar Carrusel" (solo móvil)
+  const toggleBtn = document.getElementById(`${name}Toggle`);
+  const mobileQuery = window.matchMedia(MOBILE_QUERY);
+
+  if (slides.length === 1) {
+    if (dotsContainer) dotsContainer.style.display = 'none';
+    if (prevBtn) prevBtn.style.display = 'none';
+    if (nextBtn) nextBtn.style.display = 'none';
+    return;
+  }
+
+  slides[0].classList.add('is-active');
+
+  let dots = [];
+  if (dotsContainer) {
+    slides.forEach((_, index) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', window.I18N ? window.I18N.t('carousel.dotAria', { n: index + 1 }) : `Ir al slide ${index + 1}`);
+      if (index === 0) dot.classList.add('is-active');
+
+      dot.addEventListener('click', () => {
+        goToSlide(index);
+        restartAutoplay();
+      });
+      dotsContainer.appendChild(dot);
+    });
+    dots = dotsContainer.querySelectorAll('button');
+  }
+
+  // Mueve el track al slide "index" y actualiza dots/opacidad
+  function goToSlide(index) {
+    currentIndex = (index + slides.length) % slides.length;
+    track.style.transform = `translateX(calc(-${currentIndex} * (100% + ${SLIDE_GAP_PX}px)))`;
+
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('is-active', i === currentIndex);
+      // Al salir de una sección, su fila de proyectos vuelve al primero
+      if (i !== currentIndex) {
+        slide.querySelector('[data-row-scroller]')?.scrollTo({ left: 0 });
+      }
+    });
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('is-active', i === currentIndex);
+    });
+  }
+
+  prevBtn?.addEventListener('click', () => {
+    goToSlide(currentIndex - 1);
+    restartAutoplay();
+  });
+
+  nextBtn?.addEventListener('click', () => {
+    goToSlide(currentIndex + 1);
+    restartAutoplay();
+  });
+
+  // 15s en móvil, 10s en escritorio
+  function getAutoplayMs() {
+    return mobileQuery.matches && options.mobileAutoplayMs
+      ? options.mobileAutoplayMs
+      : options.autoplayMs;
+  }
+
+  function startAutoplay() {
+    const ms = getAutoplayMs();
+    if (!ms || !autoplayEnabled) return;
+    autoplayTimer = setInterval(() => goToSlide(currentIndex + 1), ms);
+  }
+
+  function restartAutoplay() {
+    clearInterval(autoplayTimer);
+    startAutoplay();
+  }
+
+  // Botón "Desactivar Carrusel" / "Activar Carrusel"
+  function updateToggleLabel() {
+    if (!toggleBtn) return;
+    const key = autoplayEnabled ? 'carousel.disable' : 'carousel.enable';
+    toggleBtn.setAttribute('data-i18n', key); // así el cambio de idioma lo mantiene
+    toggleBtn.textContent = window.I18N ? window.I18N.t(key) : (autoplayEnabled ? 'Desactivar Carrusel' : 'Activar Carrusel');
+    toggleBtn.setAttribute('aria-pressed', String(!autoplayEnabled));
+  }
+
+  toggleBtn?.addEventListener('click', () => {
+    autoplayEnabled = !autoplayEnabled;
+    restartAutoplay();
+    updateToggleLabel();
+  });
+
+  // Si se rota el celular o cambia el ancho, se recalcula el tiempo (10s <-> 15s)
+  mobileQuery.addEventListener('change', restartAutoplay);
+
+  startAutoplay();
+}
+
+
+// Filas horizontales de proyectos (solo se ven así en móvil, ver CSS)
+// Flechas internas = pasan de página (2 proyectos) en página dentro de la misma sección.
+function initProjectRows() {
+  document.querySelectorAll('[data-row]').forEach((row) => {
+    const scroller = row.querySelector('[data-row-scroller]');
+    const prev = row.querySelector('.row-arrow--prev');
+    const next = row.querySelector('.row-arrow--next');
+    const counter = row.querySelector('.row-counter');
+    if (!scroller) return;
+
+    // En móvil se muestran hasta 2 proyectos por página (ver CSS)
+    const PER_PAGE = 2;
+    const total = Math.ceil(scroller.children.length / PER_PAGE);
+
+    // Con una sola página no hacen falta flechas ni contador
+    if (total <= 1) {
+      row.classList.add('row-wrap--single');
+      return;
+    }
+
+    // Índice de la página visible según cuánto se desplazó la fila
+    function currentIndex() {
+      return Math.round(scroller.scrollLeft / scroller.clientWidth);
+    }
+
+    function update() {
+      const index = Math.min(Math.max(currentIndex(), 0), total - 1);
+      if (counter) counter.textContent = `${index + 1} / ${total}`;
+      if (prev) prev.disabled = index === 0;
+      if (next) next.disabled = index === total - 1;
+    }
+
+    function goTo(index) {
+      const target = Math.min(Math.max(index, 0), total - 1);
+      scroller.scrollTo({ left: target * scroller.clientWidth, behavior: 'smooth' });
+    }
+
+    prev?.addEventListener('click', () => goTo(currentIndex() - 1));
+    next?.addEventListener('click', () => goTo(currentIndex() + 1));
+
+    // También se actualiza cuando el usuario desliza con el dedo
+    let ticking = false;
+    scroller.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { update(); ticking = false; });
+    }, { passive: true });
+
+    window.addEventListener('resize', update);
+    update();
+  });
+}
+
+
+// Validación y envío (simulado) del formulario de contacto
+function handleContactForm() {
+  const form = document.getElementById('contactForm');
+  const status = document.getElementById('formStatus');
+
+  if (!form || !status) return;
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const nombre = form.nombre.value.trim();
+    const email = form.email.value.trim();
+    const mensaje = form.mensaje.value.trim();
+    const website = form.website ? form.website.value.trim() : ''; // honeypot anti-bot
+
+    const t = (key) => (window.I18N ? window.I18N.t(key) : key);
+
+    if (!nombre || !email || !mensaje) {
+      showStatus(t('contact.errorFields'), 'error');
+      return;
+    }
+
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!emailValido) {
+      showStatus(t('contact.errorEmail'), 'error');
+      return;
+    }
+
+    // Desabilitar botón durante el envío
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = t('contact.submitting');
+
+    try {
+      // Determinar URL del backend según el ambiente
+      const backendURL = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3001/api/send-email'
+        : '/api/send-email';
+
+      const response = await fetch(backendURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre,
+          email,
+          mensaje,
+          website,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        showStatus(result.message || t('contact.successDefault'), 'success');
+        form.reset();
+      } else {
+        showStatus(result.message || t('contact.errorSendDefault'), 'error');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      showStatus(t('contact.errorConnection'), 'error');
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
+    }
+  });
+
+  function showStatus(message, type) {
+    status.textContent = message;
+    status.classList.remove('is-success', 'is-error');
+    status.classList.add(type === 'success' ? 'is-success' : 'is-error');
+
+    // Limpiar mensaje después de 5 segundos si es error
+    if (type === 'error') {
+      setTimeout(() => {
+        status.textContent = '';
+        status.classList.remove('is-success', 'is-error');
+      }, 5000);
+    }
+  }
+}
+
+
+// Año actual en el footer
+function setFooterYear() {
+  const yearSpan = document.getElementById('year');
+  if (!yearSpan) return;
+  yearSpan.textContent = new Date().getFullYear();
+}

@@ -26,7 +26,8 @@ import { PRODUCTOS } from '../../lib/productos.js';
 const ARCHIVOS_GRATIS = new Set(['Galeria.apk', 'BlocNote.apk', 'MultiExtractor_Freemium.rar']);
 
 async function resolverArchivoDeApp(appId) {
-  const producto = PRODUCTOS[appId];
+  // hasOwn: evita que claves heredadas como "constructor" pasen por producto.
+  const producto = Object.hasOwn(PRODUCTOS, appId) ? PRODUCTOS[appId] : null;
   if (!producto) {
     console.error(`Producto desconocido: "${appId}". Revisá lib/productos.js.`);
     return null;

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Francisco Ramirez</title>
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+  <meta name="theme-color" content="#384cc1">
+  <meta name="robots" content="noindex">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <canvas id="starsCanvas"></canvas>
+
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <a href="index.html#inicio" class="navbar__logo"><img class="logo-icon" src="assets/images/logo-framirezdev.png" alt="" width="28" height="28">Framirez<span class="dot">.</span>dev</a>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div id="dashboardLoading" class="dashboard-loading">Cargando...</div>
+
+    <div id="dashboardContent" style="display:none;">
+      <div class="dashboard-header">
+        <div class="dashboard-header__welcome">
+          <h1 id="dashboardWelcome"></h1>
+          <span id="dashboardRoleBadge" class="dashboard-header__role"></span>
+        </div>
+        <div class="dashboard-header__visitas">Visitas este mes: <span data-visitas-total>—</span></div>
+        <button type="button" class="btn btn--ghost" id="logoutBtn">Cerrar sesión</button>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="dashboard-card">
+          <h2>Tu cuenta</h2>
+          <p>Este es tu panel personal. Desde acá vamos a ir sumando funciones para usuarios registrados.</p>
+        </div>
+      </div>
+
+      <div id="adminSection" class="dashboard-grid" style="display:none; margin-top: 1.5rem;">
+        <div class="dashboard-card dashboard-card--admin">
+          <h2>Panel de administración</h2>
+          <p>Sección visible solo para el rol admin. Acá va a ir la gestión de usuarios, contenidos, etc.</p>
+        </div>
+
+        <div class="dashboard-card dashboard-card--admin dashboard-card--visitas">
+          <div class="dashboard-card__header">
+            <h2>Visitas</h2>
+            <select id="visitasPeriodoSelect" class="visitas-periodo-select" aria-label="Mes"></select>
+          </div>
+
+          <div class="visitas-resumen">
+            <div class="visitas-resumen__item">
+              <span class="visitas-resumen__valor" id="visitasResumenTotal">0</span>
+              <span class="visitas-resumen__label">Total</span>
+            </div>
+            <div class="visitas-resumen__item">
+              <span class="visitas-resumen__valor" id="visitasResumenUsuarios">0</span>
+              <span class="visitas-resumen__label">Usuarios</span>
+            </div>
+            <div class="visitas-resumen__item">
+              <span class="visitas-resumen__valor" id="visitasResumenVisitantes">0</span>
+              <span class="visitas-resumen__label">Visitantes</span>
+            </div>
+          </div>
+
+          <h3>Por usuario registrado</h3>
+          <div class="visitas-table-wrap">
+            <table class="visitas-table" id="visitasTablaUsuarios">
+              <thead><tr><th>Usuario</th><th>Visitas</th><th>Última visita</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <h3>Por visitante anónimo</h3>
+          <div class="visitas-table-wrap">
+            <table class="visitas-table" id="visitasTablaVisitantes">
+              <thead><tr><th>ID de visitante</th><th>Visitas</th><th>Última visita</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="dashboard-card dashboard-card--admin">
+          <div class="dashboard-card__header">
+            <h2>Core Web Vitals</h2>
+            <span class="vitals-muestras" id="vitalsMuestras"></span>
+          </div>
+          <p class="vitals-nota">p75 de los últimos 28 días (usuarios reales).</p>
+          <div class="visitas-resumen" id="vitalsResumen"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <img class="footer__logo" src="assets/images/logo-framirezdev.png" alt="Logo Framirez.Dev" width="40" height="40">
+    <p>&copy; <span id="year"></span> Framirez.dev - Todos los derechos reservados</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/visitas.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

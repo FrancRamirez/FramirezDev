@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { limitar, responder429 } from '../lib/rateLimit.js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -53,6 +54,13 @@ export default async (req, res) => {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
+  // Máximo 3 mensajes cada 10 minutos por IP: cada envío dispara 2 emails
+  // (uno a vos y uno de confirmación) y consume cuota de Resend.
+  const limite = limitar(req, 'contacto', 3, 10 * 60 * 1000);
+  if (!limite.permitido) {
+    return responder429(res, limite, 'Enviaste varios mensajes seguidos. Espera unos minutos e inténtalo de nuevo.');
+  }
+
   try {
     const { nombre, email, mensaje, website } = req.body || {};
 
@@ -67,6 +75,13 @@ export default async (req, res) => {
     }
 
     // Validaciones
+    if (typeof nombre !== 'string' || typeof email !== 'string' || typeof mensaje !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: 'Por favor completá todos los campos requeridos.',
+      });
+    }
+
     if (!nombre || !email || !mensaje) {
       return res.status(400).json({
         success: false,
@@ -119,18 +134,19 @@ export default async (req, res) => {
     }
     console.log('Notificación enviada, id:', notifResult.data?.id);
 
-    // Email al usuario (confirmación) - si falla, no debe romper la respuesta al usuario
+    // Email al usuario (confirmación) - si falla, no debe romper la respuesta al usuario.
+    // A propósito es un texto FIJO: no repite el nombre ni el mensaje que
+    // escribió quien llenó el formulario. Así nadie puede usar este endpoint
+    // para mandarle texto arbitrario a un tercero desde tu dominio.
     try {
       const confirmResult = await resend.emails.send({
         from: 'FraMirez Dev <notificaciones@framirezdev.com.ar>',
         to: email,
         subject: '✓ Hemos recibido tu mensaje',
         html: `
-          <h2>¡Gracias por contactarnos, ${nombreSafe}!</h2>
-          <p>Recibimos tu mensaje correctamente.</p>
-          <p><strong>Tu mensaje:</strong></p>
-          <p>${mensajeSafe}</p>
-          <p>Te responderemos pronto.</p>
+          <h2>¡Gracias por contactarnos!</h2>
+          <p>Recibimos tu mensaje correctamente y te responderemos pronto.</p>
+          <p><small>Si no escribiste este mensaje desde framirezdev.com.ar, puedes ignorar este correo.</small></p>
           <hr>
           <p><em>Saludos,<br>Francisco Ramirez - Desarrollador FullStack</em></p>
         `,

@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm install",
-  "outputDirectory": ".",
+  "outputDirectory": "public",
   "functions": {
     "api/send-email.js": {
       "memory": 128,
@@ -14,5 +14,32 @@
       "memory": 128,
       "maxDuration": 10
     }
-  }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Content-Security-Policy-Report-Only",
+          "value": "default-src 'self'; script-src 'self' https://sdk.mercadopago.com https://http2.mlstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.mercadopago.com https://mercadopago.com https://*.mercadolibre.com https://*.mlstatic.com; frame-src https://*.mercadopago.com https://*.mercadopago.com.ar https://*.mercadolibre.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+        }
+      ]
+    }
+  ]
 }

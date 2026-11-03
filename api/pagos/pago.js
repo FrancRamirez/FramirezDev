@@ -20,10 +20,12 @@
 // Todo lo sensible (Access Token) sigue viviendo en lib/mercadopago.js;
 // el catálogo de productos (no sensible) vive en lib/productos.js.
 
+import crypto from 'crypto';
 import { getPaymentClient } from '../../lib/mercadopago.js';
 import { getProducto, listarProductos } from '../../lib/productos.js';
-import { registrarCompra, listarAppsCompradasPorUsuario } from '../../lib/compras.js';
+import { registrarCompra, listarAppsCompradasPorUsuario, usuarioComproApp } from '../../lib/compras.js';
 import { readSessionToken, verifySessionToken } from '../../lib/auth.js';
+import { limitar, responder429 } from '../../lib/rateLimit.js';
 
 const ALLOWED_ORIGINS = [
   'https://framirezdev.com.ar',
@@ -78,8 +80,15 @@ async function handlePost(req, res) {
       });
     }
 
+    // Máximo 10 intentos de pago cada 10 minutos por IP: frena a quien use
+    // el formulario para probar tarjetas robadas ("carding").
+    const limite = limitar(req, 'pago', 10, 10 * 60 * 1000);
+    if (!limite.permitido) {
+      return responder429(res, limite, 'Demasiados intentos de pago. Espera unos minutos e inténtalo de nuevo.');
+    }
+
     const { app: appId } = req.query || {};
-    if (!appId) {
+    if (!appId || typeof appId !== 'string') {
       return res.status(400).json({ success: false, message: 'Falta indicar qué producto se compra.' });
     }
 
@@ -104,10 +113,37 @@ async function handlePost(req, res) {
         message: 'Faltan datos del pago. Volvé a intentar desde el formulario.',
       });
     }
+    if (
+      typeof token !== 'string' ||
+      typeof payment_method_id !== 'string' ||
+      typeof payer.email !== 'string'
+    ) {
+      return res.status(400).json({ success: false, message: 'Datos de pago inválidos.' });
+    }
+
+    // Si esta cuenta ya compró la app, no se vuelve a cobrar: se la manda
+    // directo a la descarga.
+    if (await usuarioComproApp(sesion.id, producto.appId)) {
+      return res.status(409).json({
+        success: false,
+        status: 'already_owned',
+        message: 'Esta cuenta ya compró esta app. Puedes descargarla desde tu cuenta, sin pagar de nuevo.',
+        downloadUrl: `/api/pagos/descargar?app=${producto.appId}`,
+      });
+    }
 
     const paymentClient = getPaymentClient();
 
+    // Clave de idempotencia: el token de la tarjeta es de un solo uso, así
+    // que un doble click manda el MISMO token dos veces. Con la misma clave,
+    // Mercado Pago devuelve el pago ya creado en vez de cobrar de nuevo.
+    const idempotencyKey = crypto
+      .createHash('sha256')
+      .update(`${sesion.id}:${producto.appId}:${token}`)
+      .digest('hex');
+
     const resultado = await paymentClient.create({
+      requestOptions: { idempotencyKey },
       body: {
         transaction_amount: producto.precio,
         token,
@@ -119,7 +155,8 @@ async function handlePost(req, res) {
           email: payer.email,
           identification: payer.identification,
         },
-        // Evita que un doble click/reintento del navegador cree dos cobros.
+        // Referencia para identificar el pago en el panel de Mercado Pago.
+        // (La protección contra doble cobro es la idempotencyKey de arriba.)
         external_reference: `${producto.appId}-${sesion.username}-${Date.now()}`,
       },
     });

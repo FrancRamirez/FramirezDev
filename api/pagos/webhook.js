@@ -50,7 +50,11 @@ export default async (req, res) => {
 
     if (pago.status === 'approved') {
       await marcarCompraAprobada(String(pago.id));
-    } else if (pago.status === 'rejected' || pago.status === 'cancelled') {
+    } else if (['rejected', 'cancelled', 'refunded', 'charged_back'].includes(pago.status)) {
+      // 'refunded' (devolución) y 'charged_back' (contracargo) también se
+      // marcan como 'rechazado': la tabla `compras` solo tiene los estados
+      // pendiente/aprobado/rechazado, y 'rechazado' es el que quita el
+      // acceso a la descarga.
       await marcarCompraRechazada(String(pago.id));
     }
     // Otros estados (in_process, etc.) no requieren acción: se espera

@@ -17,6 +17,7 @@ import {
   isValidUsername,
   isValidPassword,
 } from '../../lib/auth.js';
+import { limitar, responder429 } from '../../lib/rateLimit.js';
 
 const ALLOWED_ORIGINS = [
   'https://framirezdev.com.ar',
@@ -31,10 +32,21 @@ if (process.env.NODE_ENV === 'development') {
 const INVALID_CREDENTIALS_MSG = 'Usuario o contraseña incorrectos.';
 
 async function handleLogin(req, res) {
+  // Máximo 10 intentos de login cada 10 minutos por IP (frena fuerza bruta
+  // y evita que alguien sature el servidor con cálculos de bcrypt).
+  const limite = limitar(req, 'login', 10, 10 * 60 * 1000);
+  if (!limite.permitido) {
+    return responder429(res, limite, 'Demasiados intentos de inicio de sesión. Espera unos minutos e inténtalo de nuevo.');
+  }
+
   try {
     const { username, password } = req.body || {};
     if (!username || !password) {
       return res.status(400).json({ success: false, message: 'Completá usuario y contraseña.' });
+    }
+    // Solo se aceptan strings: un objeto/array en el JSON no debe llegar a la consulta.
+    if (typeof username !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({ success: false, message: 'Datos inválidos.' });
     }
 
     const pool = getPool();
@@ -99,6 +111,13 @@ async function handleMe(req, res) {
 }
 
 async function handleRegister(req, res) {
+  // Máximo 5 cuentas nuevas por hora por IP (evita llenar la base de datos
+  // de usuarios falsos y gastar la cuota gratuita de TiDB).
+  const limite = limitar(req, 'register', 5, 60 * 60 * 1000);
+  if (!limite.permitido) {
+    return responder429(res, limite, 'Se crearon demasiadas cuentas desde tu conexión. Inténtalo de nuevo más tarde.');
+  }
+
   try {
     const { username, password } = req.body || {};
 

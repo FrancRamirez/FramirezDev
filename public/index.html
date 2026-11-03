@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="meta.title">Francisco Ramirez | Desarrollador FullStack</title>
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+  <meta name="theme-color" content="#384cc1">
+  <meta name="description" content="Portfolio personal de Francisco Ramirez (Framirez) - Desarrollador FullStack Freelancer." data-i18n-content="meta.description">
+
+  <!-- Fuentes: Space Grotesk (títulos) + Inter (texto) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Canvas: fondo estrellado dinámico -->
+  <canvas id="starsCanvas"></canvas>
+
+  <!-- Header: navbar -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <a href="#inicio" class="navbar__logo"><img class="logo-icon" src="assets/images/logo-framirezdev.png" alt="" width="28" height="28">Framirez<span class="dot">.</span>Dev</a>
+
+      <!-- Hamburguesa (mobile), lógica en script.js -->
+      <button class="navbar__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" data-i18n-aria-label="nav.toggleAria">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="navbar__menu" id="navMenu">
+        <a href="#inicio" class="nav-link" data-i18n="nav.inicio">Inicio</a>
+        <a href="#sobre-mi" class="nav-link" data-i18n="nav.sobreMi">Acerca de mí</a>
+        <a href="#proyectos" class="nav-link" data-i18n="nav.proyectos">Proyectos</a>
+        <a href="#stack" class="nav-link" data-i18n="nav.stack">Stack</a>
+        <a href="#estudios" class="nav-link" data-i18n="nav.estudios">Estudios</a>
+        <a href="#contacto" class="nav-link nav-link--cta" data-i18n="nav.contacto">Contacto</a>
+        <a href="login.html" class="nav-link" id="accountLink">Ingresar</a>
+
+        <!-- Selector de idioma: existe y funciona (setLanguage/toggleLanguage en i18n.js),
+             pero queda oculto por ahora vía .lang-toggle--hidden en style.css -->
+        <button type="button" id="langToggle" class="lang-toggle lang-toggle--hidden" tabindex="-1" aria-hidden="true"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Sección 1: Hero / Bienvenida -->
+    <section id="inicio" class="section hero">
+      <div class="hero__card">
+        <h1 class="hero__title" data-i18n="hero.title">¡Hola!</h1>
+        <p class="hero__text" data-i18n="hero.text">Bienvenid@s y muchas gracias por visitar mi página web</p>
+        <a href="#contacto" class="btn btn--primary hero__cta" data-i18n="hero.cta">Hablemos</a>
+      </div>
+
+      <div class="hero__media">
+        <!-- Collage: capturas reutilizadas de Proyectos -->
+        <div class="hero__stack">
+          <img src="assets/images/NartoEv.jpg" alt="Captura del sitio NartoEV" data-i18n-alt="hero.imgNartoAlt" class="hero__stack-img hero__stack-img--back">
+          <img src="assets/images/HerreriaEduardo.jpg" alt="Captura del sitio Herrería Eduardo" data-i18n-alt="hero.imgHerreriaAlt" class="hero__stack-img hero__stack-img--front">
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 2: Acerca de mí -->
+    <section id="sobre-mi" class="section about">
+      <div class="card card--wide">
+        <h2 class="section__title" data-i18n="about.title">Acerca de mí</h2>
+        <p class="about__text" data-i18n="about.text1">
+          Mi nombre es Francisco, soy desarrollador Full-Stack y freelancer. Técnico Universitario Programador graduado de la Universidad Tecnológica Nacional.
+        </p>
+        <p class="about__text" data-i18n="about.text2">
+          Me dedico a ofrecer soluciones y servicios, sean para desarrollar páginas
+          web, software o aplicaciones a los usuarios que lo necesitan.
+        </p>
+      </div>
+    </section>
+
+    <!-- Sección 3: Proyectos (carrusel Páginas Web + Aplicaciones) -->
+    <section id="proyectos" class="section section--wide">
+
+      <div class="carousel--main" data-carousel="proyectos" data-autoplay="10000" data-autoplay-mobile="15000">
+
+        <!-- Flechas prev/next -->
+       <button type="button" class="carousel__arrow carousel__arrow--prev" aria-label="Sección anterior" data-i18n-aria-label="carousel.prevAria">&#10094;</button>
+
+        <!-- Ventana que recorta y difumina los slides -->
+        <div class="carousel carousel__viewport">
+          <div class="carousel__track" id="proyectosTrack">
+
+            <!-- Slide 1: Páginas Web -->
+            <div class="carousel__slide">
+              <div class="card card--wide">
+                <h2 class="section__title" data-i18n="projects.webTitle">Páginas Web</h2>
+                <div class="row-wrap" data-row>
+                  <button type="button" class="row-arrow row-arrow--prev" aria-label="Proyecto anterior" data-i18n-aria-label="carousel.rowPrevAria">&#8249;</button>
+                  <div class="project-grid" data-row-scroller>
+
+                  <article class="project-card">
+                    <h3 class="project-card__name">Herrería Eduardo</h3>
+                    <a href="https://herreriaeduardo.com.ar" target="_blank" rel="noopener" class="project-card__image">
+                      <img src="assets/images/HerreriaEduardo.jpg" alt="Herrería Eduardo">
+                    </a>
+                    <p class="project-card__details" data-i18n="projects.herreria.details">Sitio Web de Herreria en general.</p>
+                  </article>
+
+                  <article class="project-card">
+                    <h3 class="project-card__name">NartoEV</h3>
+                    <a href="https://nartoev.com.ar" target="_blank" rel="noopener" class="project-card__image">
+                      <img src="assets/images/NartoEv.jpg" alt="NartoEV">
+                    </a>
+                    <p class="project-card__details" data-i18n="projects.narto.details">Sitio Web de Instaladores de cargadores para vehículos eléctricos.</p>
+                  </article>
+
+                </div>
+                  <button type="button" class="row-arrow row-arrow--next" aria-label="Proyecto siguiente" data-i18n-aria-label="carousel.rowNextAria">&#8250;</button>
+                  <div class="row-counter" aria-live="polite"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 2: Aplicaciones -->
+            <div class="carousel__slide">
+              <div class="card card--wide">
+                <h2 class="section__title" data-i18n="projects.appsTitle">Programas y Aplicaciones</h2>
+                <div class="row-wrap" data-row>
+                  <button type="button" class="row-arrow row-arrow--prev" aria-label="Proyecto anterior" data-i18n-aria-label="carousel.rowPrevAria">&#8249;</button>
+                  <div class="app-grid" data-row-scroller>
+                  <article class="app-card">
+                    <h3 class="app-card__name">Galería</h3>
+                    <img class="app-card__icon" src="assets/images/Galeria.png" alt="Ícono de Galeria" data-i18n-alt="projects.galeria.iconAlt">
+                    <p class="app-card__details" data-i18n="projects.galeria.details">Galeria de fotos (android).</p>
+                    <a href="/api/pagos/descargar?archivo=Galeria.apk" class="app-card__download" data-download>
+                      <span data-i18n="projects.download">Descarga</span>
+                    </a>
+                  </article>
+                  <article class="app-card">
+                    <h3 class="app-card__name">BlocNote</h3>
+                    <img class="app-card__icon" src="assets/images/BlocNote.png" alt="Ícono de BlocNote" data-i18n-alt="projects.blocnote.iconAlt">
+                    <p class="app-card__details" data-i18n="projects.blocnote.details">Bloc de notas (android).</p>
+                    <a href="/api/pagos/descargar?archivo=BlocNote.apk" class="app-card__download" data-download>
+                      <span data-i18n="projects.download">Descarga</span>
+                    </a>
+                  </article>
+                  <article class="app-card" data-app-id="multiextractor" data-app-precio="15000">
+                    <h3 class="app-card__name" data-i18n="projects.multiextractor.name">Multi-Extractor</h3>
+                    <img class="app-card__icon" src="assets/images/Logo_MultiExtractor.png" alt="Ícono de Multi-Extractor" data-i18n-alt="projects.multiextractor.iconAlt">
+                    <p class="app-card__details" data-i18n="projects.multiextractor.details">Descompilador de archivos múltiple (Escritorio/Windows).</p>
+                    <div class="app-card__actions">
+                      <a href="/api/pagos/descargar?archivo=MultiExtractor_Freemium.rar" class="app-card__download" data-download>
+                        <span data-i18n="projects.multiextractor.freemiumBtn">Adquirir versión freemium</span>
+                      </a>
+                      <button type="button" class="app-card__download app-card__buy app-card__buy--dorado" data-buy-app data-app-id="multiextractor">
+                        <span data-i18n="projects.multiextractor.premiumBtn">Adquirir versión gratuita</span>
+                        <span class="app-card__precio" data-precio-label></span>
+                      </button>
+                    </div>
+                  </article>
+                  <article class="app-card" data-app-id="videolader" data-app-precio="10000">
+                    <h3 class="app-card__name" data-i18n="projects.videolader.name">Videolader</h3>
+                    <img class="app-card__icon" src="assets/images/Icon.png" alt="Ícono de Videolader" data-i18n-alt="projects.videolader.iconAlt">
+                    <p class="app-card__details" data-i18n="projects.videolader.details">Descargador de videos y musica sin anuncios para Youtube (android).</p>
+                    <button type="button" class="app-card__download app-card__buy app-card__buy--dorado" data-buy-app data-app-id="videolader">
+                      <span data-i18n="projects.buy">Comprar</span>
+                      <span class="app-card__precio" data-precio-label></span>
+                    </button>
+                  </article>
+                  <article class="app-card" data-app-id="omnimedia" data-app-precio="15000">
+                    <h3 class="app-card__name" data-i18n="projects.omnimedia.name">OmniMedia</h3>
+                    <img class="app-card__icon" src="assets/images/OmniMedia.png" alt="Ícono de OmniMedia" data-i18n-alt="projects.omnimedia.iconAlt">
+                    <p class="app-card__details" data-i18n="projects.omnimedia.details">Reproductor de música y video en una sola app (android).</p>
+                    <button type="button" class="app-card__download app-card__buy app-card__buy--dorado" data-buy-app data-app-id="omnimedia">
+                      <span data-i18n="projects.buy">Comprar</span>
+                      <span class="app-card__precio" data-precio-label></span>
+                    </button>
+                  </article>
+                  <article class="app-card" data-app-id="nicemagent" data-app-precio="10000">
+                    <h3 class="app-card__name" data-i18n="projects.nicemagent.name">Nicemagent</h3>
+                    <img class="app-card__icon" src="assets/images/Nicemagent.png" alt="Ícono de Nicemagent" data-i18n-alt="projects.nicemagent.iconAlt">
+                    <p class="app-card__details" data-i18n="projects.nicemagent.details">Gestor de caché y operativo del rendimiento del dispositivo (android).</p>
+                    <button type="button" class="app-card__download app-card__buy app-card__buy--dorado" data-buy-app data-app-id="nicemagent">
+                      <span data-i18n="projects.buy">Comprar</span>
+                      <span class="app-card__precio" data-precio-label></span>
+                    </button>
+                  </article>
+                </div>
+                  <button type="button" class="row-arrow row-arrow--next" aria-label="Proyecto siguiente" data-i18n-aria-label="carousel.rowNextAria">&#8250;</button>
+                  <div class="row-counter" aria-live="polite"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 3: Juegos -->
+            <div class="carousel__slide">
+              <div class="card card--wide">
+                <h2 class="section__title" data-i18n="projects.gamesTitle">Juegos</h2>
+                <div class="row-wrap" data-row>
+                  <button type="button" class="row-arrow row-arrow--prev" aria-label="Proyecto anterior" data-i18n-aria-label="carousel.rowPrevAria">&#8249;</button>
+                  <div class="app-grid" data-row-scroller>
+                  <article class="app-card">
+                    <h3 class="app-card__name">Patra</h3>
+                    <img class="app-card__icon" src="assets/images/Patra.png" alt="Ícono Patras" data-i18n-alt="projects.patra.iconAlt">
+                    <p class="app-card__details" data-i18n="projects.patra.details">Juego de recoleccion y derrotar enemigos (Escritorio/Windows).</p>
+                    <button type="button" class="app-card__download app-card__buy app-card__buy--dorado" data-buy-app data-app-id="patra">
+                      <span data-i18n="projects.buy">Comprar</span>
+                      <span class="app-card__precio" data-precio-label></span>
+                    </button>
+                  </article>
+                </div>
+                  <button type="button" class="row-arrow row-arrow--next" aria-label="Proyecto siguiente" data-i18n-aria-label="carousel.rowNextAria">&#8250;</button>
+                  <div class="row-counter" aria-live="polite"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <button type="button" class="carousel__arrow carousel__arrow--next" aria-label="Sección siguiente" data-i18n-aria-label="carousel.nextAria">&#10095;</button>
+
+        <!-- Los puntos se generan solos en JS según cuántos
+             .carousel__slide haya (acá van a ser 2: uno por sección) -->
+        <div class="carousel__dots" id="proyectosDots"></div>
+
+        <!-- Solo móvil: detiene/reanuda el avance automático entre secciones -->
+        <button type="button" class="carousel__toggle" id="proyectosToggle" data-i18n="carousel.disable">Desactivar Carrusel</button>
+      </div>
+    </section>
+
+    <!-- Sección 5: Stack Informático (marquee infinito) -->
+    <section id="stack" class="section">
+      <div class="card card--wide card--gradient">
+        <h2 class="section__title" data-i18n="stack.title">Stack Informático</h2>
+
+        <!-- Grupo A + grupo B (copia) para loop infinito sin cortes -->
+        <div class="stack-marquee">
+          <div class="stack-marquee__track">
+
+            <div class="stack-marquee__group">
+              <div class="stack-icon"><img src="assets/images/html.svg" alt="HTML"><span class="stack-icon__label">HTML</span></div>
+              <div class="stack-icon"><img src="assets/images/css.svg" alt="CSS"><span class="stack-icon__label">CSS</span></div>
+              <div class="stack-icon"><img src="assets/images/js.svg" alt="JavaScript"><span class="stack-icon__label">JavaScript</span></div>
+              <div class="stack-icon"><img src="assets/images/nodejs.svg" alt="Node.js"><span class="stack-icon__label">Node.js</span></div>
+              <div class="stack-icon"><img src="assets/images/csharp.svg" alt="C#"><span class="stack-icon__label">C#</span></div>
+              <div class="stack-icon"><img src="assets/images/c++.svg" alt="C++"><span class="stack-icon__label">C++</span></div>
+              <div class="stack-icon"><img src="assets/images/kotlin.svg" alt="Kotlin"><span class="stack-icon__label">Kotlin</span></div>
+              <div class="stack-icon"><img src="assets/images/godot.svg" alt="Godot"><span class="stack-icon__label">Godot</span></div>
+              <div class="stack-icon"><img src="assets/images/mysql.svg" alt="MySQL"><span class="stack-icon__label">MySQL</span></div>
+              <div class="stack-icon"><img src="assets/images/vercel.svg" alt="Vercel"><span class="stack-icon__label">Vercel</span></div>
+              <div class="stack-icon"><img src="assets/images/github.svg" alt="GitHub"><span class="stack-icon__label">GitHub</span></div>
+              <div class="stack-icon"><img src="assets/images/vs.svg" alt="Visual Studio"><span class="stack-icon__label">Visual Studio</span></div>
+              <div class="stack-icon"><img src="assets/images/vsc.svg" alt="Visual Studio Code"><span class="stack-icon__label">VS Code</span></div>
+              <div class="stack-icon"><img src="assets/images/cloudflare.svg" alt="Cloudflare"><span class="stack-icon__label">Cloudflare</span></div>
+            </div>
+
+            <!-- Grupo B: copia de A, oculta a lectores de pantalla -->
+            <div class="stack-marquee__group" aria-hidden="true">
+              <div class="stack-icon"><img src="assets/images/html.svg" alt=""><span class="stack-icon__label">HTML</span></div>
+              <div class="stack-icon"><img src="assets/images/css.svg" alt=""><span class="stack-icon__label">CSS</span></div>
+              <div class="stack-icon"><img src="assets/images/js.svg" alt=""><span class="stack-icon__label">JavaScript</span></div>
+              <div class="stack-icon"><img src="assets/images/nodejs.svg" alt=""><span class="stack-icon__label">Node.js</span></div>
+              <div class="stack-icon"><img src="assets/images/csharp.svg" alt=""><span class="stack-icon__label">C#</span></div>
+              <div class="stack-icon"><img src="assets/images/c++.svg" alt=""><span class="stack-icon__label">C++</span></div>
+              <div class="stack-icon"><img src="assets/images/kotlin.svg" alt=""><span class="stack-icon__label">Kotlin</span></div>
+              <div class="stack-icon"><img src="assets/images/godot.svg" alt=""><span class="stack-icon__label">Godot</span></div>
+              <div class="stack-icon"><img src="assets/images/mysql.svg" alt=""><span class="stack-icon__label">MySQL</span></div>
+              <div class="stack-icon"><img src="assets/images/vercel.svg" alt=""><span class="stack-icon__label">Vercel</span></div>
+              <div class="stack-icon"><img src="assets/images/github.svg" alt=""><span class="stack-icon__label">GitHub</span></div>
+              <div class="stack-icon"><img src="assets/images/vs.svg" alt=""><span class="stack-icon__label">Visual Studio</span></div>
+              <div class="stack-icon"><img src="assets/images/vsc.svg" alt=""><span class="stack-icon__label">VS Code</span></div>
+              <div class="stack-icon"><img src="assets/images/cloudflare.svg" alt="Cloudflare"><span class="stack-icon__label">Cloudflare</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 6: Estudios -->
+    <section id="estudios" class="section">
+      <div class="card card--wide card--gradient">
+        <h2 class="section__title section__title--left" data-i18n="estudios.title">Estudios</h2>
+        <div class="study">
+          <img class="study__image" src="assets/images/UTN.jpg" alt="Frente de la Universidad Tecnológica Nacional, Facultad Regional Pacheco" data-i18n-alt="estudios.imgAlt">
+          <div class="study__text">
+            <h3>Universidad Tecnológica Nacional</h3>
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 7: Contacto -->
+    <section id="contacto" class="section contact">
+      <div class="contact__social">
+        <p class="contact__hint" data-i18n="contact.hint">¿Tenés una idea o un proyecto en mente? ¡Hablemos!</p>
+        <div class="contact__icons">
+          <a href="https://wa.me/5491151368909" class="social-icon social-icon--whatsapp" target="_blank" rel="noopener" aria-label="WhatsApp"><img src="assets/images/whatsapp.svg" alt=""></a>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=francisco76.ef@gmail.com" class="social-icon social-icon--gmail" target="_blank" rel="noopener" aria-label="Gmail"><img src="assets/images/gmail.svg" alt=""></a>
+          <a href="https://www.instagram.com/franc.ramirez03/" class="social-icon social-icon--instagram" target="_blank" rel="noopener" aria-label="instagram"><img src="assets/images/instagram.svg" alt=""></a>
+          <a href="https://www.linkedin.com/in/francisco-ramirez-367094343/" class="social-icon social-icon--linkedin" target="_blank" rel="noopener" aria-label="linkedin"><img src="assets/images/linkedin.svg" alt=""></a>
+        </div>
+      </div>
+
+      <div class="contact__form-wrapper">
+        <h2 class="section__title" data-i18n-html="contact.formTitle">Contactá por Gmail <br></h2>
+
+        <!-- id usado por handleContactForm() en script.js -->
+        <form id="contactForm" class="contact-form" novalidate>
+          <!-- Honeypot anti-spam: campo oculto para humanos, visible para bots.
+               No le pongas type="hidden" (los bots lo saltean); se oculta por CSS. -->
+          <div class="contact-form__honeypot" aria-hidden="true">
+            <label for="website">Sitio web</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+          </div>
+
+          <label class="visually-hidden" for="nombre" data-i18n="contact.labelNombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" data-i18n-placeholder="contact.placeholderNombre" maxlength="100" required>
+
+          <label class="visually-hidden" for="email" data-i18n="contact.labelEmail">Email</label>
+          <input type="email" id="email" name="email" placeholder="Tu email" data-i18n-placeholder="contact.placeholderEmail" required>
+
+          <label class="visually-hidden" for="mensaje" data-i18n="contact.labelMensaje">Mensaje</label>
+          <textarea id="mensaje" name="mensaje" placeholder="Contame sobre tu proyecto..." data-i18n-placeholder="contact.placeholderMensaje" rows="6" maxlength="5000" required></textarea>
+
+          <button type="submit" class="btn btn--primary" data-i18n="contact.submit">Enviar</button>
+
+          <!-- script.js escribe el mensaje de éxito/error acá -->
+          <p class="contact-form__status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal de compra (Mercado Pago Checkout Bricks) - ver js/pago.js -->
+  <div class="pago-modal" id="pagoModal" hidden aria-hidden="true">
+    <div class="pago-modal__overlay" data-pago-cerrar></div>
+    <div class="pago-modal__box" role="dialog" aria-modal="true" aria-labelledby="pagoModalTitulo">
+      <button type="button" class="pago-modal__cerrar" data-pago-cerrar aria-label="Cerrar" data-i18n-aria-label="pago.cerrarAria">&times;</button>
+      <h2 id="pagoModalTitulo" data-i18n="pago.titulo">Completar compra</h2>
+      <div id="paymentBrick_container"></div>
+      <p class="pago-modal__status" id="pagoStatus" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <img class="footer__logo" src="assets/images/logo-framirezdev.png" alt="Logo Framirez.Dev" width="40" height="40">
+    <p>&copy; <span id="year"></span> Framirez.Dev - <span data-i18n="footer.rights">Todos los derechos reservados</span></p>
+    <p class="footer__visitas">Visitas totales: <span data-visitas-total-general>—</span></p>
+  </footer>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/visitas.js"></script>
+  <script src="js/vitals.js" defer></script>
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <script src="js/pago.js"></script>
+</body>
+</html>
