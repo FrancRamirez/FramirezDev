@@ -18,6 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/donaciones.css">
 </head>
 <body>
   <!-- Canvas: fondo estrellado dinámico -->
@@ -41,6 +42,7 @@
         <a href="#proyectos" class="nav-link" data-i18n="nav.proyectos">Proyectos</a>
         <a href="#stack" class="nav-link" data-i18n="nav.stack">Stack</a>
         <a href="#estudios" class="nav-link" data-i18n="nav.estudios">Estudios</a>
+        <a href="#donar" class="nav-link nav-link--donar" data-i18n="nav.donar">Donar</a>
         <a href="#contacto" class="nav-link nav-link--cta" data-i18n="nav.contacto">Contacto</a>
         <a href="login.html" class="nav-link" id="accountLink">Ingresar</a>
 
@@ -297,6 +299,22 @@
       </div>
     </section>
 
+    <!-- Sección: Donaciones (Mercado Pago Checkout Pro) - ver js/donar.js y api/donar.js -->
+    <section id="donar" class="section donar">
+      <div class="donar__card" data-donar>
+        <span class="donar__icon" role="img" aria-label="Donación" data-i18n-aria-label="donar.iconAlt"></span>
+        <h2 class="section__title" data-i18n="donar.title">Apoya el proyecto</h2>
+        <p class="donar__text" data-i18n="donar.text">Si mis apps o mi trabajo te sirvieron, puedes dejar una donación voluntaria. Es opcional y me ayuda a seguir desarrollando.</p>
+        <div class="donar__montos">
+          <button type="button" class="donar__btn" data-donar-monto="1999"><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto">$1.999</span></button>
+          <button type="button" class="donar__btn" data-donar-monto="4999"><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto">$4.999</span></button>
+          <button type="button" class="donar__btn" data-donar-monto="9999"><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto">$9.999</span></button>
+        </div>
+        <p class="donar__status" data-donar-status role="status" aria-live="polite"></p>
+        <p class="donar__nota" data-i18n="donar.nota">Pago seguro a través de Mercado Pago. Serás redirigido para completar la donación.</p>
+      </div>
+    </section>
+
     <!-- Sección 7: Contacto -->
     <section id="contacto" class="section contact">
       <div class="contact__social">
@@ -352,6 +370,17 @@
   </div>
 
   <footer class="footer">
+    <!-- Donaciones (versión compacta) - ver js/donar.js -->
+    <div class="footer__donar" data-donar>
+      <span class="donar__icon" role="img" aria-label="Donación" data-i18n-aria-label="donar.iconAlt"></span>
+      <span class="footer__donar-texto" data-i18n="donar.footerTexto">Apoya el proyecto:</span>
+      <div class="donar__montos">
+        <button type="button" class="donar__btn" data-donar-monto="1999"><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto">$1.999</span></button>
+        <button type="button" class="donar__btn" data-donar-monto="4999"><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto">$4.999</span></button>
+        <button type="button" class="donar__btn" data-donar-monto="9999"><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto">$9.999</span></button>
+      </div>
+      <p class="donar__status" data-donar-status role="status" aria-live="polite"></p>
+    </div>
     <img class="footer__logo" src="assets/images/logo-framirezdev.png" alt="Logo Framirez.Dev" width="40" height="40">
     <p>&copy; <span id="year"></span> Framirez.Dev - <span data-i18n="footer.rights">Todos los derechos reservados</span></p>
     <p class="footer__visitas">Visitas totales: <span data-visitas-total-general>—</span></p>
@@ -364,5 +393,6 @@
   <script src="js/vitals.js" defer></script>
   <script src="https://sdk.mercadopago.com/js/v2"></script>
   <script src="js/pago.js"></script>
+  <script src="js/donar.js"></script>
 </body>
 </html>

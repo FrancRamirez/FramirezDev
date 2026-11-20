@@ -1,0 +1,150 @@
+/* css/donaciones.css
+   Estilos del sistema de donaciones (sección #donar y fila del footer).
+   Archivo aparte del style.css para mantener separado este sistema.
+   Usa las variables globales definidas en style.css (:root). */
+
+/* ---- Ícono: se pinta como máscara para poder cambiarle el color ---- */
+.donar__icon {
+  display: inline-block;
+  width: 72px;
+  height: 72px;
+  background-color: #f4d675;
+  -webkit-mask: url("../assets/images/Donacion.svg") center / contain no-repeat;
+  mask: url("../assets/images/Donacion.svg") center / contain no-repeat;
+}
+
+/* ---- Sección #donar ---- */
+.donar__card {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.donar__card .section__title {
+  margin: 1rem 0 0.75rem;
+}
+.donar__text {
+  max-width: 520px;
+  margin: 0 auto 1.75rem;
+  color: var(--text-muted);
+}
+
+/* ---- Botones de monto (compartidos por la sección y el footer) ---- */
+.donar__montos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.donar__btn {
+  padding: 1rem 0.5rem;
+  background: var(--surface-soft);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+.donar__btn:hover:not(:disabled),
+.donar__btn:focus-visible {
+  border-color: var(--accent-green);
+  background: rgba(34, 197, 94, 0.12);
+  transform: translateY(-2px);
+}
+.donar__btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* Texto del botón: "Donar" (pequeño) + monto */
+.donar__btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+.donar__accion {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f4d675;
+}
+.footer__donar .donar__btn {
+  flex-direction: row;
+  gap: 0.4rem;
+}
+.footer__donar .donar__accion {
+  font-size: 0.75rem;
+}
+
+/* Link "Donar" del navbar */
+.nav-link--donar {
+  color: #f4d675;
+  font-weight: 600;
+}
+
+/* ---- Mensajes ---- */
+.donar__status {
+  min-height: 1.5em;
+  margin-top: 1.25rem;
+  font-weight: 600;
+}
+.donar__status.is-success { color: var(--accent-green); }
+.donar__status.is-error { color: #f87171; }
+.donar__status.is-info { color: var(--text); }
+.donar__nota {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ---- Fila del footer (versión compacta) ---- */
+.footer__donar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+.footer__donar .donar__icon {
+  width: 28px;
+  height: 28px;
+}
+.footer__donar-texto {
+  color: var(--text);
+  font-weight: 600;
+}
+.footer__donar .donar__montos {
+  display: flex;
+  gap: 0.5rem;
+}
+.footer__donar .donar__btn {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+  border-radius: var(--radius-sm);
+}
+.footer__donar .donar__status {
+  flex-basis: 100%;
+  min-height: 0;
+  margin-top: 0;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .donar__card { padding: 2rem 1.25rem; }
+  .donar__montos { grid-template-columns: 1fr; }
+  .footer__donar .donar__montos { flex-wrap: wrap; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .donar__btn { transition: none; }
+  .donar__btn:hover:not(:disabled) { transform: none; }
+}

@@ -13,6 +13,10 @@
     "api/pagos/webhook.js": {
       "memory": 128,
       "maxDuration": 10
+    },
+    "api/donar.js": {
+      "memory": 128,
+      "maxDuration": 10
     }
   },
   "headers": [

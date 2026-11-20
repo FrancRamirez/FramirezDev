@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 
 import authHandler from '../api/auth/index.js';
 import visitasHandler from '../api/visitas/index.js';
+import donarHandler from '../api/donar.js';
 
 dotenv.config({ path: '.env.local' });
 
@@ -44,6 +45,8 @@ app.use(express.json());
 // el path solo, así que req.query.action llega igual.
 app.all('/api/auth', authHandler);
 app.all('/api/visitas', visitasHandler);
+// Donaciones (Mercado Pago Checkout Pro): mismo handler que usa Vercel.
+app.all('/api/donar', donarHandler);
 
 // Configurar Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
