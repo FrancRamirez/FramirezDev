@@ -5,9 +5,12 @@
 //
 // Qué hace:
 //   1) En el bloque [data-donar] (sección #donar), el visitante escribe el monto
-//      que quiera en la caja (solo números, sin máximo). El botón "Donar"
-//      muestra ese monto y se deshabilita si la caja está vacía o en $0.
-//   2) El botón pide a POST /api/donar una URL de pago y redirige a Mercado Pago.
+//      que quiera en la caja (solo números, sin máximo). El monto del botón
+//      empieza en "-" y NO cambia mientras se escribe: se actualiza al
+//      confirmar con Enter (o al salir de la caja). Enter solo confirma el
+//      monto; no redirige.
+//   2) El botón "Donar" pide a POST /api/donar una URL de pago con el monto
+//      confirmado y redirige a Mercado Pago.
 //   3) Al volver de Mercado Pago (?donacion=exito|pendiente|falla), muestra
 //      el mensaje de agradecimiento (o de error) y limpia la URL.
 //
@@ -43,51 +46,63 @@
     const montoBoton = contenedor.querySelector('[data-donar-boton-monto]');
     if (!input || !boton) return;
 
-    // Monto actual (entero) o null si la caja está vacía o en 0.
+    // Monto confirmado (entero) o null si todavía no hay uno. Es el que se muestra
+    // en el botón y el que se envía al donar.
     let monto = null;
 
-    // Refleja el monto en el botón y lo habilita o deshabilita.
-    function actualizarVista() {
-      boton.disabled = monto === null;
-      if (montoBoton) montoBoton.textContent = monto === null ? '' : `$${formatear(monto)}`;
+    // Muestra el monto confirmado en el botón ("-" si no hay).
+    function actualizarBoton() {
+      if (montoBoton) montoBoton.textContent = monto === null ? '-' : `$${formatear(monto)}`;
     }
 
-    // Escribir en la caja -> actualiza el monto (solo dígitos).
+    // Escribir en la caja: solo dígitos. No toca el botón hasta confirmar.
     input.addEventListener('input', () => {
       const limpio = input.value.replace(/\D/g, '');
       if (limpio !== input.value) input.value = limpio;
-
-      const n = limpio === '' ? 0 : Number(limpio);
-      monto = Number.isSafeInteger(n) && n >= MONTO_MIN ? n : null;
-
       mostrar(contenedor, '', 'info');
-      actualizarVista();
     });
 
-    // Al salir de la caja: si no hay un monto válido, se avisa.
-    input.addEventListener('blur', () => {
-      if (monto === null) {
+    // Confirma lo escrito en la caja como monto de la donación (sin redirigir).
+    function confirmar() {
+      const n = input.value === '' ? 0 : Number(input.value);
+      if (Number.isSafeInteger(n) && n >= MONTO_MIN) {
+        monto = n;
+        input.value = String(n); // normaliza ceros a la izquierda (ej. "0050" -> "50")
+        mostrar(contenedor, '', 'info');
+      } else {
+        monto = null;
         mostrar(contenedor, t('donar.montoInvalido', 'Ingresa un monto mayor a $0.'), 'error');
       }
+      actualizarBoton();
+    }
+
+    // Enter en la caja = confirmar el monto (cambia el botón, NO redirige).
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        confirmar();
+      }
     });
 
-    // Enter en la caja = donar.
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && monto !== null) {
-        e.preventDefault();
-        donar();
-      }
+    // Al salir de la caja también se confirma, para que escribir el monto y
+    // hacer clic directo en "Donar" funcione. Una caja vacía no muestra aviso.
+    input.addEventListener('blur', () => {
+      if (input.value !== '' || monto !== null) confirmar();
     });
 
     boton.addEventListener('click', donar);
 
     function bloquear(bloqueado) {
       input.disabled = bloqueado;
-      boton.disabled = bloqueado || monto === null;
+      boton.disabled = bloqueado;
     }
 
     async function donar() {
-      if (monto === null) return;
+      // Sin monto confirmado no se redirige: se pide escribirlo.
+      if (monto === null) {
+        mostrar(contenedor, t('donar.montoRequerido', 'Escribe un monto y presiona Enter para confirmarlo.'), 'error');
+        return;
+      }
 
       bloquear(true);
       mostrar(contenedor, t('donar.redirigiendo', 'Redirigiendo a Mercado Pago...'), 'info');
@@ -125,8 +140,8 @@
       }
     });
 
-    // Estado inicial (valor que trae el HTML en la caja).
-    input.dispatchEvent(new Event('input'));
+    // Estado inicial: sin monto, el botón muestra "-".
+    actualizarBoton();
   }
 
   // Mensaje al volver de Mercado Pago.
