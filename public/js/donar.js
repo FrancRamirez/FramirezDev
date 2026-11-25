@@ -4,15 +4,10 @@
 // (que maneja la compra de productos).
 //
 // Qué hace:
-//   1) El bloque [data-donar] (sección #donar) tiene una barra
-//      (slider) y una caja numérica que se mantienen sincronizadas:
-//        - Mover la barra  -> actualiza la caja (de $500 en $500).
-//        - Escribir en la caja -> mueve la barra al punto más cercano.
-//          Si el monto es mayor al máximo, se ajusta al máximo al instante;
-//          si es menor al mínimo, se ajusta al mínimo al salir de la caja
-//          (para no molestar mientras se escribe, ej. "5" antes de "5000").
-//   2) El botón "Donar" pide a POST /api/donar una URL de pago y redirige
-//      a Mercado Pago.
+//   1) En el bloque [data-donar] (sección #donar), el visitante escribe el monto
+//      que quiera en la caja (solo números, sin máximo). El botón "Donar"
+//      muestra ese monto y se deshabilita si la caja está vacía o en $0.
+//   2) El botón pide a POST /api/donar una URL de pago y redirige a Mercado Pago.
 //   3) Al volver de Mercado Pago (?donacion=exito|pendiente|falla), muestra
 //      el mensaje de agradecimiento (o de error) y limpia la URL.
 //
@@ -20,10 +15,8 @@
 // solo la interfaz y una validación previa para avisar rápido al visitante.
 
 (function () {
-  // Rango de la barra y de la caja. Deben coincidir con min/max/step del <input type="range">
-  // del HTML y con MONTO_MIN / MONTO_MAX de lib/donaciones.js.
-  const MONTO_MIN = 1000;
-  const MONTO_MAX = 10000;
+  // Monto mínimo (pesos). Debe coincidir con MONTO_MIN de lib/donaciones.js.
+  const MONTO_MIN = 1;
 
   // Traduce con I18N si está disponible; si no, usa el texto de respaldo.
   function t(clave, respaldo, params) {
@@ -43,85 +36,45 @@
     estado.className = `donar__status is-${tipo}`;
   }
 
-  // Inicializa un bloque [data-donar]: conecta barra, caja y botón.
+  // Inicializa un bloque [data-donar]: conecta la caja y el botón.
   function iniciarBloque(contenedor) {
-    const slider = contenedor.querySelector('[data-donar-slider]');
     const input = contenedor.querySelector('[data-donar-input]');
     const boton = contenedor.querySelector('[data-donar-enviar]');
-    const display = contenedor.querySelector('[data-donar-display]');
     const montoBoton = contenedor.querySelector('[data-donar-boton-monto]');
-    if (!slider || !input || !boton) return;
+    if (!input || !boton) return;
 
-    // Monto actual (entero) o null si la caja está vacía.
+    // Monto actual (entero) o null si la caja está vacía o en 0.
     let monto = null;
 
-    const limitar = (n) => Math.min(Math.max(n, MONTO_MIN), MONTO_MAX);
-
-    // Pinta la parte "llena" de la barra según la posición del índice.
-    function pintarBarra() {
-      const fraccion = (slider.value - MONTO_MIN) / (MONTO_MAX - MONTO_MIN); // 0 a 1
-      slider.style.setProperty('--f', String(fraccion));
-    }
-
-    // Refleja el monto (ya limitado al rango) en el texto grande, el botón y la barra.
+    // Refleja el monto en el botón y lo habilita o deshabilita.
     function actualizarVista() {
-      const valido = monto !== null;
-      boton.disabled = !valido;
-      const txt = valido ? `$${formatear(limitar(monto))}` : '—';
-      if (display) display.textContent = txt;
-      if (montoBoton) montoBoton.textContent = valido ? txt : '';
+      boton.disabled = monto === null;
+      if (montoBoton) montoBoton.textContent = monto === null ? '' : `$${formatear(monto)}`;
     }
 
-    // Ajusta al rango permitido: lo que esté fuera pasa al mínimo o al máximo.
-    function ajustarARango() {
-      if (monto === null) return;
-      monto = limitar(monto);
-      input.value = String(monto);
-      slider.value = String(monto);
-      pintarBarra();
-      actualizarVista();
-    }
-
-    // Mover la barra -> actualiza la caja.
-    slider.addEventListener('input', () => {
-      monto = Number(slider.value);
-      input.value = String(monto);
-      pintarBarra();
-      actualizarVista();
-    });
-
-    // Escribir en la caja -> actualiza la barra (en vivo).
+    // Escribir en la caja -> actualiza el monto (solo dígitos).
     input.addEventListener('input', () => {
-      // Solo dígitos: se descartan letras, símbolos, puntos y comas.
       const limpio = input.value.replace(/\D/g, '');
       if (limpio !== input.value) input.value = limpio;
 
-      monto = limpio === '' ? null : Number(limpio);
+      const n = limpio === '' ? 0 : Number(limpio);
+      monto = Number.isSafeInteger(n) && n >= MONTO_MIN ? n : null;
 
-      if (monto !== null) {
-        // Mayor al máximo: se ajusta al máximo al instante.
-        if (monto > MONTO_MAX) {
-          monto = MONTO_MAX;
-          input.value = String(monto);
-        }
-        // La barra queda en el paso más cercano (y en el mínimo si el monto es menor).
-        slider.value = String(limitar(monto));
-        pintarBarra();
-      }
+      mostrar(contenedor, '', 'info');
       actualizarVista();
     });
 
-    // Al salir de la caja: menor al mínimo -> mínimo; vacía -> vuelve al valor de la barra.
+    // Al salir de la caja: si no hay un monto válido, se avisa.
     input.addEventListener('blur', () => {
-      if (monto === null) monto = Number(slider.value);
-      ajustarARango();
+      if (monto === null) {
+        mostrar(contenedor, t('donar.montoInvalido', 'Ingresa un monto mayor a $0.'), 'error');
+      }
     });
 
-    // Enter en la caja = ajustar y donar.
+    // Enter en la caja = donar.
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && monto !== null) {
         e.preventDefault();
-        ajustarARango();
         donar();
       }
     });
@@ -129,14 +82,12 @@
     boton.addEventListener('click', donar);
 
     function bloquear(bloqueado) {
-      slider.disabled = bloqueado;
       input.disabled = bloqueado;
       boton.disabled = bloqueado || monto === null;
     }
 
     async function donar() {
       if (monto === null) return;
-      ajustarARango();
 
       bloquear(true);
       mostrar(contenedor, t('donar.redirigiendo', 'Redirigiendo a Mercado Pago...'), 'info');
@@ -175,8 +126,7 @@
     });
 
     // Estado inicial (valor que trae el HTML en la caja).
-    monto = Number(input.value) || Number(slider.value);
-    ajustarARango();
+    input.dispatchEvent(new Event('input'));
   }
 
   // Mensaje al volver de Mercado Pago.

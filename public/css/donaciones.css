@@ -32,91 +32,23 @@
   color: var(--text-muted);
 }
 
-/* ---- Selector de monto: barra + caja manual ---- */
+/* ---- Caja de monto ---- */
 .donar__control {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  /* Mismo ancho que el texto de la tarjeta (.donar__text) para que todo quede alineado */
   width: 100%;
   max-width: 520px;
   margin: 0 auto 1.5rem;
 }
-.donar__valor {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.15rem;
-}
-.donar__valor-label {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-.donar__valor-monto {
+/* Texto grande en dorado de la sección */
+.donar__destacado {
+  margin: 0 0 1.5rem;
   font-family: var(--font-heading);
-  font-size: 2.4rem;
+  font-size: clamp(1.9rem, 5vw, 2.8rem);
   font-weight: 700;
-  color: var(--text);
-}
-
-/* Barra (slider). --f (0 a 1) la actualiza js/donar.js para pintar la parte llena. */
-.donar__slider {
-  --f: 0;
-  width: 100%;
-  height: 28px;
-  margin: 0;
-  background: transparent;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.donar__slider:disabled { opacity: 0.6; cursor: wait; }
-.donar__slider::-webkit-slider-runnable-track {
-  box-sizing: border-box;
-  height: 10px;
-  border-radius: 999px;
-  background: linear-gradient(to right, var(--accent-green) calc(12px + (100% - 24px) * var(--f)), var(--surface-soft) calc(12px + (100% - 24px) * var(--f)));
-  border: 1px solid var(--border);
-}
-.donar__slider::-moz-range-track {
-  height: 8px;
-  border-radius: 999px;
-  background: var(--surface-soft);
-  border: 1px solid var(--border);
-}
-.donar__slider::-moz-range-progress {
-  height: 8px;
-  border-radius: 999px;
-  background: var(--accent-green);
-}
-.donar__slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 24px;
-  height: 24px;
-  margin-top: -7px; /* centra el índice (24px) sobre la pista (10px) */
-  border-radius: 50%;
-  background: #f4d675;
-  border: 2px solid var(--bg);
-  box-shadow: 0 0 0 1px var(--border);
-  transition: transform 0.15s ease;
-}
-.donar__slider::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #f4d675;
-  border: 2px solid var(--bg);
-}
-.donar__slider:hover:not(:disabled)::-webkit-slider-thumb { transform: scale(1.12); }
-.donar__slider:focus-visible { outline: 2px solid var(--accent-green); outline-offset: 4px; border-radius: 999px; }
-
-.donar__escala {
-  display: flex;
-  justify-content: space-between;
-  margin-top: -0.4rem;
-  padding: 0 12px; /* el índice recorre la pista dejando 12px a cada lado: las etiquetas quedan bajo sus extremos */
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  line-height: 1.15;
+  color: #f4d675;
 }
 
 /* Caja manual */
@@ -143,7 +75,7 @@
   color: #f4d675;
 }
 .donar__input {
-  width: 7ch;
+  width: 10ch;
   padding: 0;
   background: transparent;
   border: 0;
@@ -227,6 +159,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .donar__btn, .donar__slider::-webkit-slider-thumb { transition: none; }
+  .donar__btn { transition: none; }
   .donar__btn:hover:not(:disabled) { transform: none; }
 }
