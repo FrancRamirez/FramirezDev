@@ -305,11 +305,24 @@
         <span class="donar__icon" role="img" aria-label="Donación" data-i18n-aria-label="donar.iconAlt"></span>
         <h2 class="section__title" data-i18n="donar.title">Apoya el proyecto</h2>
         <p class="donar__text" data-i18n="donar.text">Si mis apps o mi trabajo te sirvieron, puedes dejar una donación voluntaria. Es opcional y me ayuda a seguir desarrollando.</p>
-        <div class="donar__montos">
-          <button type="button" class="donar__btn" data-donar-monto="1999"><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto">$1.999</span></button>
-          <button type="button" class="donar__btn" data-donar-monto="4999"><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto">$4.999</span></button>
-          <button type="button" class="donar__btn" data-donar-monto="9999"><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto">$9.999</span></button>
+        <!-- Selector de monto: barra ($1.000 a $10.000, de $500 en $500) + caja manual.
+             Ambos controles se mantienen sincronizados desde js/donar.js -->
+        <div class="donar__control">
+          <div class="donar__valor">
+            <span class="donar__valor-label" data-i18n="donar.montoLabel">Monto a donar</span>
+            <output class="donar__valor-monto" data-donar-display>$1.000</output>
+          </div>
+          <input type="range" class="donar__slider" data-donar-slider min="1000" max="10000" step="500" value="1000" data-i18n-aria-label="donar.sliderLabel" aria-label="Ajustar monto de la donación">
+          <div class="donar__escala" aria-hidden="true"><span>$1.000</span><span>$10.000</span></div>
+          <label class="donar__manual">
+            <span data-i18n="donar.manualLabel">O escribe otro monto (ARS)</span>
+            <span class="donar__input-wrap">
+              <span class="donar__prefijo" aria-hidden="true">$</span>
+              <input type="text" class="donar__input" data-donar-input inputmode="numeric" autocomplete="off" maxlength="5" value="1000">
+            </span>
+          </label>
         </div>
+        <button type="button" class="donar__btn donar__btn--enviar" data-donar-enviar><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto" data-donar-boton-monto>$1.000</span></button>
         <p class="donar__status" data-donar-status role="status" aria-live="polite"></p>
         <p class="donar__nota" data-i18n="donar.nota">Pago seguro a través de Mercado Pago. Serás redirigido para completar la donación.</p>
       </div>
@@ -370,17 +383,6 @@
   </div>
 
   <footer class="footer">
-    <!-- Donaciones (versión compacta) - ver js/donar.js -->
-    <div class="footer__donar" data-donar>
-      <span class="donar__icon" role="img" aria-label="Donación" data-i18n-aria-label="donar.iconAlt"></span>
-      <span class="footer__donar-texto" data-i18n="donar.footerTexto">Apoya el proyecto:</span>
-      <div class="donar__montos">
-        <button type="button" class="donar__btn" data-donar-monto="1999"><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto">$1.999</span></button>
-        <button type="button" class="donar__btn" data-donar-monto="4999"><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto">$4.999</span></button>
-        <button type="button" class="donar__btn" data-donar-monto="9999"><span class="donar__accion" data-i18n="donar.accion">Donar</span> <span class="donar__monto">$9.999</span></button>
-      </div>
-      <p class="donar__status" data-donar-status role="status" aria-live="polite"></p>
-    </div>
     <img class="footer__logo" src="assets/images/logo-framirezdev.png" alt="Logo Framirez.Dev" width="40" height="40">
     <p>&copy; <span id="year"></span> Framirez.Dev - <span data-i18n="footer.rights">Todos los derechos reservados</span></p>
     <p class="footer__visitas">Visitas totales: <span data-visitas-total-general>—</span></p>

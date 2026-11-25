@@ -2,7 +2,7 @@
 //
 // Endpoint del sistema de donaciones (aparte del de pagos de productos).
 //
-//   POST /api/donar   body: { "monto": 1999 | 4999 | 9999 }
+//   POST /api/donar   body: { "monto": <entero en ARS, entre MONTO_MIN y MONTO_MAX> }
 //   -> { success: true, url: "<init_point de Mercado Pago>" }
 //
 // El navegador redirige al visitante a esa url y allí completa la donación.
@@ -42,7 +42,7 @@ export default async (req, res) => {
     return responder429(res, limite, 'Demasiados intentos. Espera unos minutos e inténtalo de nuevo.');
   }
 
-  // El monto se valida en el servidor contra la lista de montos permitidos.
+  // El monto se valida en el servidor contra el rango permitido (lib/donaciones.js).
   const monto = Number(req.body?.monto);
   if (!montoValido(monto)) {
     return res.status(400).json({ success: false, message: 'Monto de donación inválido.' });
