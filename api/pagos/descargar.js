@@ -14,7 +14,7 @@
 //                    exigir login): valida el token de una sola compra.
 //                    Se mantiene por compatibilidad con compras viejas.
 //   ?archivo=... -> descarga GRATIS: lista fija de nombres permitidos
-//                    (Galería, BlocNote), sin pago de por medio.
+//                    (Galería, BlocNote, Time-Manager), sin pago de por medio.
 
 import { buscarCompraPorToken, usuarioComproApp } from '../../lib/compras.js';
 import { getBlobUrl } from '../../lib/blob.js';
@@ -23,7 +23,7 @@ import { PRODUCTOS } from '../../lib/productos.js';
 
 // Nombres de descargas gratuitas permitidos, tal cual se subieron al Blob.
 // Patra dejó de ser gratis (ver lib/productos.js) — sacado de esta lista.
-const ARCHIVOS_GRATIS = new Set(['Galeria.apk', 'BlocNote.apk', 'MultiExtractor_Freemium.rar']);
+const ARCHIVOS_GRATIS = new Set(['Galeria.apk', 'BlocNote.apk', 'TimeManager.apk', 'MultiExtractor_Freemium.rar']);
 
 async function resolverArchivoDeApp(appId) {
   // hasOwn: evita que claves heredadas como "constructor" pasen por producto.
